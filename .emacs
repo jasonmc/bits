@@ -18,7 +18,7 @@
       (tool-bar-mode 0)))
 
 ;; truncate lines if they are too long
-(setq-default truncate-lines nil)
+
 ;; trucate even even when screen is split into multiple windows
 (setq-default truncate-partial-width-windows nil)
 
@@ -30,12 +30,7 @@
 
 (iswitchb-mode 1)
 
-
-;; ;; enable skeleton-pair insert globally
-;; (setq skeleton-pair t)
-;; (global-set-key (kbd "(") 'skeleton-pair-insert-maybe)
-;; (global-set-key (kbd "[") 'skeleton-pair-insert-maybe)
-;; (global-set-key (kbd "{") 'skeleton-pair-insert-maybe)
+(setq default-tab-width 4)
 
 ;; Insertion of Dates.
 (defun insert-date-string ()
@@ -54,6 +49,37 @@
   (insert-date-string)
   (insert "\n\n")
 )
+
+(defun copy-line (arg)
+  "Copy lines (as many as prefix argument) in the kill ring"
+  (interactive "p")
+  (kill-ring-save (line-beginning-position)
+				  (line-beginning-position (+ 1 arg)))
+  (message "%d line%s copied" arg (if (= 1 arg) "" "s")))
+
+(global-set-key "\C-c\C-k" 'copy-line)
+
+(defun mark-line ()
+  "Marks a line from start of indentation to end"
+   (interactive "p")
+   (back-to-indentation)
+   (set-mark-command)
+   (move-end-of-line))
+
+;;(global-set-key (kbd "C-c l") 'mark-line)
+;;(global-set-key "\C-c\C-l" "\C-a\C- \C-e\M-w")
+
+;; (defun duplicate-line()
+;;   (interactive)
+;;   (move-beginning-of-line 1)
+;;   (kill-line)
+;;   (yank)
+;; ;  (open-line 1)
+;; ;  (next-line 1)
+;; ;  (yank)
+;; )
+;; (global-set-key (kbd "C-c l") 'duplicate-line)
+
 
 (defun wicked/toggle-w3m ()
   "Switch to a w3m buffer or return to the previous buffer."
@@ -102,21 +128,25 @@
       (add-hook 'server-switch-hook 'raise-emacs-on-aqua)
       (add-to-list 'exec-path "/Library/Frameworks/Python.framework/Versions/Current/bin/")
       (add-to-list 'exec-path "/sw/bin")
+      (setenv "PATH" (concat (getenv "PATH") ":/usr/local/bin:/usr/texbin"))
       (setq shell-file-name "/bin/zsh")))
 
 (show-paren-mode t)
-(setq show-paren-style 'expression)
 
 (custom-set-variables
   ;; custom-set-variables was added by Custom.
   ;; If you edit it by hand, you could mess it up, so be careful.
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
- '(paren-match-face (quote paren-face-match-light))
- '(paren-sexp-mode t)
  '(display-time-mode t)
-; '(transient-mark-mode t)
-)
+ '(ecb-options-version "2.32")
+ '(paren-match-face (quote paren-face-match-light))
+ '(paren-sexp-mode t))
+
+(custom-set-faces
+ '(diff-added ((t (:foreground "Dark Green"))) 'now)
+ '(diff-removed ((t (:foreground "Red"))) 'now)
+ )
 
 (if (equal (system-name) "giles.cs.tcd.ie")
     (progn (require 'color-theme)
@@ -125,8 +155,6 @@
 	   (color-theme-greiner)
 	   ;(color-theme-robin-hood)
 	   (require 'php-mode)
-	   (add-to-list 'exec-path "/Library/Frameworks/Python.framework/Versions/Current/bin/")
-	   (add-to-list 'exec-path "/sw/bin")
 	   (setq-default ispell-program-name "aspell")
 	;(setq ispell-dictionary-alist
 	;   '((nil
@@ -181,10 +209,31 @@
       ;(add-hook 'lua-mode-hook 'hs-minor-mode)
 
       (setq load-path
-	    (cons (expand-file-name "~/vm_stuff/llvm-2.3/utils/emacs") load-path))
+	    (cons (expand-file-name "~/vm_stuff/llvm/llvm-2.3/utils/emacs") load-path))
       (require 'llvm-mode)
 
       (require 'php-mode)
+
+      (defun djcb-opacity-modify (&optional dec)
+	"modify the transparency of the emacs frame; if DEC is t,
+    decrease the transparency, otherwise increase it in 10%-steps"
+	(let* ((alpha-or-nil (frame-parameter nil 'alpha)) ; nil before setting
+	       (oldalpha (if alpha-or-nil alpha-or-nil 100))
+	       (newalpha (if dec (- oldalpha 10) (+ oldalpha 10))))
+	  (when (and (>= newalpha frame-alpha-lower-limit) (<= newalpha 100))
+	    (modify-frame-parameters nil (list (cons 'alpha newalpha))))))
+
+      ;; C-8 will increase opacity (== decrease transparency)
+      ;; C-9 will decrease opacity (== increase transparency
+      ;; C-0 will returns the state to normal
+      (global-set-key (kbd "C-8") '(lambda()(interactive)(djcb-opacity-modify)))
+      (global-set-key (kbd "C-9") '(lambda()(interactive)(djcb-opacity-modify t)))
+      (global-set-key (kbd "C-0") '(lambda()(interactive)
+				     (modify-frame-parameters nil `((alpha . 100)))))
+
+
+	  (global-set-key [(mouse-13)] 'scroll-down)
+	  (global-set-key [(mouse-15)] 'scroll-up)
 
       (add-hook 'c-mode-hook 'c++-xref-hook)
       (add-hook 'c++-mode-hook 'c++-xref-hook)
@@ -193,24 +242,26 @@
       (global-set-key [(f8)] 'wicked/toggle-w3m)))
 
 
-(if (equal (downcase(system-name)) "odysseus")
+(if (equal (system-name) "odysseus")
     (progn
       (require 'color-theme)
       (require 'php-mode)
       (color-theme-initialize)
       (color-theme-greiner)))
 
-
+(require 'git-emacs)
 
 ;;LaTeX stuff
-(if (or (and (eq window-system 'ns) (equal (downcase(system-name)) "odysseus")) (equal (system-name) "McLovin")) 
+(if (or (and (eq window-system 'ns) (or (equal (system-name) "odysseus") (equal (system-name) "giles.cs.tcd.ie"))) (equal (system-name) "McLovin"))
+
+
     (progn
       (load "auctex.el" nil t t)
       ;; The following only works with AUCTeX loaded
       (require 'tex-site)
       (load "preview-latex.el" nil t t)))
 
-(if (and (eq window-system 'ns) (equal (downcase(system-name)) "odysseus") )
+(if (and (eq window-system 'ns) (or (equal (system-name) "odysseus") (equal (system-name) "giles.cs.tcd.ie")) )
     (progn
       (add-hook 'TeX-mode-hook
 		(lambda ()
@@ -224,13 +275,6 @@
 (setq-default TeX-PDF-mode t)
 ;; Make emacs aware of multi-file projects
 (setq-default TeX-master nil)
-
-
-;(add-to-list 'exec-path "/usr/local/teTeX/bin/i386-apple-darwin-current")
-(setenv "PATH" (concat (getenv "PATH")
-":/usr/local/bin:/usr/local/teTeX/bin/i386-apple-darwin-current"))
-
-
 
 ;;; (autoload 'python-mode "python-mode" "Python Mode." t)
 ;;; (add-to-list 'auto-mode-alist '("\\.py\\'" . python-mode))
