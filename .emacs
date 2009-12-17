@@ -26,7 +26,7 @@
 (setq inhibit-startup-message t)
 
 ;; get intermittent messages to stop typing
-(type-break-mode)
+;;(type-break-mode)
 
 (iswitchb-mode 1)
 
@@ -132,6 +132,7 @@
       (setq shell-file-name "/bin/zsh")))
 
 (show-paren-mode t)
+(setq show-paren-style 'expression)
 
 (custom-set-variables
   ;; custom-set-variables was added by Custom.
@@ -242,26 +243,25 @@
       (global-set-key [(f8)] 'wicked/toggle-w3m)))
 
 
-(if (equal (system-name) "odysseus")
+(if (equal (downcase(system-name)) "odysseus")
     (progn
       (require 'color-theme)
       (require 'php-mode)
       (color-theme-initialize)
       (color-theme-greiner)))
 
-(require 'git-emacs)
+
 
 ;;LaTeX stuff
-(if (or (and (eq window-system 'ns) (or (equal (system-name) "odysseus") (equal (system-name) "giles.cs.tcd.ie"))) (equal (system-name) "McLovin"))
-
-
+(if (or (and (eq window-system 'ns) (or (equal (downcase(system-name)) "odysseus") (equal (system-name) "giles.cs.tcd.ie"))) (equal (system-name) "McLovin"))
     (progn
       (load "auctex.el" nil t t)
       ;; The following only works with AUCTeX loaded
       (require 'tex-site)
-      (load "preview-latex.el" nil t t)))
+      (load "preview-latex.el" nil t t)
+	  (require 'git-emacs)))
 
-(if (and (eq window-system 'ns) (or (equal (system-name) "odysseus") (equal (system-name) "giles.cs.tcd.ie")) )
+(if (and (eq window-system 'ns) (or (equal (downcase(system-name)) "odysseus") (equal (system-name) "giles.cs.tcd.ie")) )
     (progn
       (add-hook 'TeX-mode-hook
 		(lambda ()
