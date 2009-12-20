@@ -128,6 +128,7 @@
       (add-hook 'server-switch-hook 'raise-emacs-on-aqua)
       (add-to-list 'exec-path "/Library/Frameworks/Python.framework/Versions/Current/bin/")
       (add-to-list 'exec-path "/sw/bin")
+      (add-to-list 'exec-path "/usr/local/git/bin")
       (setenv "PATH" (concat (getenv "PATH") ":/usr/local/bin:/usr/texbin"))
       (setq shell-file-name "/bin/zsh")))
 
@@ -142,7 +143,8 @@
  '(display-time-mode t)
  '(ecb-options-version "2.32")
  '(paren-match-face (quote paren-face-match-light))
- '(paren-sexp-mode t))
+ '(paren-sexp-mode t)
+ '(show-paren-mode t))
 
 (custom-set-faces
  '(diff-added ((t (:foreground "Dark Green"))) 'now)
