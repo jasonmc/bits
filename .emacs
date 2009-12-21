@@ -57,7 +57,7 @@
 				  (line-beginning-position (+ 1 arg)))
   (message "%d line%s copied" arg (if (= 1 arg) "" "s")))
 
-(global-set-key "\C-c\C-k" 'copy-line)
+(global-set-key "\C-c\k" 'copy-line)
 
 (defun mark-line ()
   "Marks a line from start of indentation to end"
