@@ -118,6 +118,13 @@
 (server-start)
 (add-hook 'after-init-hook 'server-start)
 
+
+(add-hook 'c-mode-common-hook
+               (lambda ()
+                (font-lock-add-keywords nil
+                 '(("\\<\\(FIXME\\|TODO\\|BUG\\):" 1 font-lock-warning-face t)))))
+
+
 ;(if window-system 
 ;    ((add-hook 'server-switch-hook 'raise-frame)))
 
@@ -206,7 +213,9 @@
 	    (color-theme-initialize)
 	    ;(color-theme-blue-mood)
 	    ;(color-theme-subtle-hacker)
-	    (color-theme-greiner)))
+	    ;(color-theme-greiner)
+	    (color-theme-tango)
+	  ))
 
       (setq inferior-lisp-program "/usr/bin/clisp")
       ;;(add-to-list 'load-path "the path of your slime directory")
@@ -224,6 +233,8 @@
       (require 'llvm-mode)
 
       (require 'php-mode)
+	  
+	  (require 'gist)
 
       (defun djcb-opacity-modify (&optional dec)
 	"modify the transparency of the emacs frame; if DEC is t,
