@@ -10,6 +10,14 @@
 
 (add-to-list 'exec-path "/usr/local/bin")
 
+(if (string-match "odysseus" (system-name))
+	(setq machine 'odysseus)
+  (if (string-match "giles" (system-name)
+					(setq machine 'giles))
+	  (if (string-match "mclovin" (system-name)
+						(setq machine 'mclovin)))))
+
+
 (if (or (eq window-system 'ns) (eq window-system 'x))
     (progn
       (mouse-wheel-mode t)
@@ -151,7 +159,7 @@
  '(diff-removed ((t (:foreground "Red"))) 'now)
  )
 
-(if (equal (system-name) "giles.cs.tcd.ie")
+(if (eq machine 'giles)
     (progn (require 'color-theme)
 	   (color-theme-initialize)
 	   ;(color-theme-marquardt)
@@ -169,7 +177,7 @@
 	   )
   )
 
-(if (or (equal (system-name) "McLovin") (equal (system-name) "giles.cs.tcd.ie"))
+(if (or (eq machine 'mclovin) (eq machine 'giles))
     (progn
       (setq ange-ftp-local-host-regexp "\\.tcd\\.ie$\\|\\.[0-9]+\\.[0-9]+$\\|^[^.]*$")
       (setq ange-ftp-gateway-host "ftp-proxy.cs.tcd.ie")
@@ -185,7 +193,7 @@
   (load "xrefactory")
 )
 
-(if (equal (system-name) "McLovin")
+(if (eq machine 'mclovin)
     (progn
 
       (if (eq window-system 'x)
@@ -245,7 +253,7 @@
       (global-set-key [(f8)] 'wicked/toggle-w3m)))
 
 
-(if (equal (downcase(system-name)) "odysseus")
+(if (eq machine 'odysseus)
     (progn
       (require 'color-theme)
       (require 'php-mode)
@@ -255,7 +263,7 @@
 
 
 ;;LaTeX stuff
-(if (or (and (eq window-system 'ns) (or (equal (downcase(system-name)) "odysseus") (equal (system-name) "giles.cs.tcd.ie"))) (equal (system-name) "McLovin"))
+(if (or (and (eq window-system 'ns) (or (eq machine 'odysseus) (eq machine 'giles))) (eq machine 'mclovin))
     (progn
       (load "auctex.el" nil t t)
       ;; The following only works with AUCTeX loaded
@@ -263,7 +271,7 @@
       (load "preview-latex.el" nil t t)
 	  (require 'git-emacs)))
 
-(if (and (eq window-system 'ns) (or (equal (downcase(system-name)) "odysseus") (equal (system-name) "giles.cs.tcd.ie")) )
+(if (and (eq window-system 'ns) (or (eq machine 'odysseus) (eq machine 'giles)) )
     (progn
       (add-hook 'TeX-mode-hook
 		(lambda ()
