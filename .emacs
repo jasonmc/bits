@@ -11,11 +11,11 @@
 (add-to-list 'exec-path "/usr/local/bin")
 
 (if (string-match "odysseus" (system-name))
-	(setq machine 'odysseus)
-  (if (string-match "giles" (system-name)
-					(setq machine 'giles))
-	  (if (string-match "mclovin" (system-name)
-						(setq machine 'mclovin)))))
+    (setq machine 'odysseus)
+  (if (string-match "giles" (system-name))
+	  (setq machine 'giles)
+	(if (string-match "mclovin" (system-name))
+		(setq machine 'mclovin))))
 
 
 (if (or (eq window-system 'ns) (eq window-system 'x))
