@@ -173,11 +173,16 @@
  )
 
 (when (eq machine 'giles)
-	   (color-theme-initialize)
-	   ;(color-theme-marquardt)
-	   (color-theme-greiner)
-	   ;(color-theme-robin-hood)
-	   (require 'php-mode)
+      (require 'php-mode)
+
+	  (when *is-cocoa-emacs*
+		(require 'color-theme)
+		(color-theme-initialize)
+		;(color-theme-marquardt)
+		;(color-theme-robin-hood)
+		(color-theme-greiner))
+
+
 	   (setq-default ispell-program-name "aspell")
 	;(setq ispell-dictionary-alist
 	;   '((nil
@@ -281,18 +286,18 @@
 
 
 (when (eq machine 'odysseus)
-      (require 'color-theme)
       (require 'php-mode)
 
       (setq auto-mode-alist (cons '("\\.lua$" . lua-mode) auto-mode-alist))
       (autoload 'lua-mode "lua-mode" "Lua editing mode." t)
-
       (add-hook 'lua-mode-hook 'turn-on-font-lock)
       ;(add-hook 'lua-mode-hook 'hs-minor-mode)
 
-      (color-theme-initialize)
-      ;(color-theme-greiner)
-      (color-theme-tango))
+	  (when *is-cocoa-emacs*
+		(require 'color-theme)
+		(color-theme-initialize)
+		;(color-theme-greiner)
+		(color-theme-tango)))
 
 
 
