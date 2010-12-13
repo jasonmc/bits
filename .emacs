@@ -10,6 +10,12 @@
 
 (add-to-list 'exec-path "/usr/local/bin")
 
+(setq *is-a-mac* (eq system-type 'darwin))
+(setq *is-cocoa-emacs* (and *is-a-mac* (eq window-system 'ns)))
+
+(if (eq system-type 'darwin)
+    (setq system-name (car (split-string system-name "\\."))))
+
 (if (string-match "odysseus" (system-name))
     (setq machine 'odysseus)
   (if (string-match "giles" (system-name))
@@ -18,12 +24,11 @@
 		(setq machine 'mclovin))))
 
 
-(if (or (eq window-system 'ns) (eq window-system 'x))
-    (progn
+(when (or (eq window-system 'ns) (eq window-system 'x))
       (mouse-wheel-mode t)
       (scroll-bar-mode -1)
       (blink-cursor-mode 0)
-      (tool-bar-mode 0)))
+      (tool-bar-mode 0))
 
 ;; truncate lines if they are too long
 
@@ -115,8 +120,8 @@
 
 
 ;; Starts the Emacs server
-(server-start)
-(add-hook 'after-init-hook 'server-start)
+;;(server-start)
+;;(add-hook 'after-init-hook 'server-start)
 
 
 (add-hook 'c-mode-common-hook
@@ -138,14 +143,15 @@
 (defun raise-emacs-on-aqua() 
     (shell-command "osascript -e 'tell application \"Emacs\" to activate' &"))
 
-(if (eq system-type 'darwin)
-    (progn
+(when *is-a-mac*
+	  ;; Make mouse wheel / trackpad scrolling less jerky
+	  (setq mouse-wheel-scroll-amount '(0.001))
       (add-hook 'server-switch-hook 'raise-emacs-on-aqua)
       (add-to-list 'exec-path "/Library/Frameworks/Python.framework/Versions/Current/bin/")
       (add-to-list 'exec-path "/sw/bin")
       (add-to-list 'exec-path "/usr/local/git/bin")
       (setenv "PATH" (concat (getenv "PATH") ":/usr/local/bin:/usr/texbin"))
-      (setq shell-file-name "/bin/zsh")))
+      (setq shell-file-name "/bin/zsh"))
 
 (show-paren-mode t)
 (setq show-paren-style 'expression)
@@ -166,8 +172,7 @@
  '(diff-removed ((t (:foreground "Red"))) 'now)
  )
 
-(if (eq machine 'giles)
-    (progn (require 'color-theme)
+(when (eq machine 'giles)
 	   (color-theme-initialize)
 	   ;(color-theme-marquardt)
 	   (color-theme-greiner)
@@ -180,16 +185,13 @@
 	;	 ("-B" "-d" "english" "--dict-dir"
 	;	  "/Library/Application Support/cocoAspell/aspell6-en-6.0-0")
 	;	 nil iso-8859-1)))
-	   (setq ispell-extra-args '("-d" "/Library/Application Support/cocoAspell/aspell6-en-6.0-0/en.multi"))
-	   )
-  )
+	   (setq ispell-extra-args '("-d" "/Library/Application Support/cocoAspell/aspell6-en-6.0-0/en.multi")))
 
-(if (or (eq machine 'mclovin) (eq machine 'giles))
-    (progn
+(when (or (eq machine 'mclovin) (eq machine 'giles))
       (setq ange-ftp-local-host-regexp "\\.tcd\\.ie$\\|\\.[0-9]+\\.[0-9]+$\\|^[^.]*$")
       (setq ange-ftp-gateway-host "ftp-proxy.cs.tcd.ie")
       (setq ange-ftp-smart-gateway-port "24")
-      (setq ange-ftp-smart-gateway t)))
+      (setq ange-ftp-smart-gateway t))
 
 
 (defun c++-xref-hook ()
@@ -200,8 +202,7 @@
   (load "xrefactory")
 )
 
-(if (eq machine 'mclovin)
-    (progn
+(when (eq machine 'mclovin)
 
       (if (eq window-system 'x)
 	  (progn
@@ -222,11 +223,26 @@
       (require 'slime)
       (slime-setup)
 
+	  ;(require 'flymake)
+	  ;(add-hook 'find-file-hook 'flymake-find-file-hook)
+
+
       (setq auto-mode-alist (cons '("\\.lua$" . lua-mode) auto-mode-alist))
       (autoload 'lua-mode "lua-mode" "Lua editing mode." t)
 
       (add-hook 'lua-mode-hook 'turn-on-font-lock)
       ;(add-hook 'lua-mode-hook 'hs-minor-mode)
+	  (require 'flymake-lua)
+	  (add-hook 'lua-mode-hook 'flymake-lua-load)
+
+
+	  (require 'flymake-python)
+	  (add-hook 'python-mode-hook 'flymake-python-load)
+
+	  (require 'flymake-ruby)
+	  (add-hook 'python-mode-hook 'flymake-ruby-load)
+
+
 
       (setq load-path
 	    (cons (expand-file-name "~/vm_stuff/llvm/llvm-2.3/utils/emacs") load-path))
@@ -261,11 +277,10 @@
       (add-hook 'c++-mode-hook 'c++-xref-hook)
       (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
       (setq org-log-done t)
-      (global-set-key [(f8)] 'wicked/toggle-w3m)))
+      (global-set-key [(f8)] 'wicked/toggle-w3m))
 
 
-(if (eq machine 'odysseus)
-    (progn
+(when (eq machine 'odysseus)
       (require 'color-theme)
       (require 'php-mode)
 
@@ -277,26 +292,25 @@
 
       (color-theme-initialize)
       ;(color-theme-greiner)
-      (color-theme-tango)))
+      (color-theme-tango))
+
 
 
 
 ;;LaTeX stuff
-(if (or (and (eq window-system 'ns) (or (eq machine 'odysseus) (eq machine 'giles))) (eq machine 'mclovin))
-    (progn
+(when (or (and (eq window-system 'ns) (or (eq machine 'odysseus) (eq machine 'giles))) (eq machine 'mclovin))
       (load "auctex.el" nil t t)
       ;; The following only works with AUCTeX loaded
       (require 'tex-site)
       (load "preview-latex.el" nil t t)
-	  (require 'git-emacs)))
+	  (require 'git-emacs))
 
-(if (and (eq window-system 'ns) (or (eq machine 'odysseus) (eq machine 'giles)) )
-    (progn
+(when (and (eq window-system 'ns) (or (eq machine 'odysseus) (eq machine 'giles)) )
       (add-hook 'TeX-mode-hook
 		(lambda ()
 		  (add-to-list 'TeX-output-view-style
 			       '("^pdf$" "."
-				 "/Applications/Skim.app/Contents/SharedSupport/displayline %n %o %b"))))))
+				 "/Applications/Skim.app/Contents/SharedSupport/displayline %n %o %b")))))
 
 (setq TeX-auto-save t)
 (setq TeX-parse-self t)
@@ -304,6 +318,20 @@
 (setq-default TeX-PDF-mode t)
 ;; Make emacs aware of multi-file projects
 (setq-default TeX-master nil)
+
+
+(defun flymake-get-tex-args (file-name)
+  (list "latex" (list "-file-line-error" "-draftmode" "-interaction=nonstopmode" file-name)))
+
+;(defun flymake-get-tex-args (file-name)
+;  (list "pdflatex" (list "-file-line-error" "-draftmode" "-interaction=nonstopmode" file-name)))
+
+
+(add-hook 'TeX-mode-hook
+          '(lambda ()
+             ;(set-pairs '("(" "{" "[" "\"" "\'"))
+             ;(auto-fill-mode 1)
+             (flymake-mode t)))
 
 ;;; (autoload 'python-mode "python-mode" "Python Mode." t)
 ;;; (add-to-list 'auto-mode-alist '("\\.py\\'" . python-mode))
