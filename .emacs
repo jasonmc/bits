@@ -21,7 +21,10 @@
   (if (string-match "giles" (system-name))
 	  (setq machine 'giles)
 	(if (string-match "mclovin" (system-name))
-		(setq machine 'mclovin))))
+		(setq machine 'mclovin)
+	(if (string-match "turing.scss.tcd.ie" (system-name))
+		(setq machine 'turing)
+		(setq machine 'other)))))
 
 
 (when (or (eq window-system 'ns) (eq window-system 'x))
