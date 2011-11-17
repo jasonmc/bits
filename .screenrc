@@ -20,5 +20,5 @@ shell -$SHELL
 # STARTUP SCREENS
 # ------------------------------------------------------------------------------
 
-screen bash
+#screen bash
 ##screen -t irc 1 emacs -nw --debug-init -f erc

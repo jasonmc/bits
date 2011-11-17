@@ -166,14 +166,26 @@
   ;; If there is more than one, they won't work right.
  '(display-time-mode t)
  '(ecb-options-version "2.32")
+ '(flymake-allowed-file-name-masks (quote (("\\.c\\'" flymake-simple-make-init) ("\\.cpp\\'" flymake-simple-make-init) ("\\.cc\\'" flymake-simple-make-init) ("\\.xml\\'" flymake-xml-init) ("\\.html?\\'" flymake-xml-init) ("\\.cs\\'" flymake-simple-make-init) ("\\.p[ml]\\'" flymake-perl-init) ("\\.php[345]?\\'" flymake-php-init) ("\\.h\\'" flymake-master-make-header-init flymake-master-cleanup) ("\\.java\\'" flymake-simple-make-java-init flymake-simple-java-cleanup) ("[0-9]+\\.tex\\'" flymake-master-tex-init flymake-master-cleanup) ("\\.tex\\'" flymake-simple-tex-init) ("\\.idl\\'" flymake-simple-make-init))))
  '(paren-match-face (quote paren-face-match-light))
  '(paren-sexp-mode t)
  '(show-paren-mode t))
 
+;;(push '("\\.cc$" flymake-cc-init) flymake-allowed-file-name-masks)
+
+
+
+
+
+
+
 (custom-set-faces
- '(diff-added ((t (:foreground "Dark Green"))) 'now)
- '(diff-removed ((t (:foreground "Red"))) 'now)
- )
+  ;; custom-set-faces was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
+ '(diff-added ((t (:foreground "Dark Green"))) t)
+ '(diff-removed ((t (:foreground "Red"))) t))
 
 (when (eq machine 'giles)
       (require 'php-mode)
@@ -215,8 +227,8 @@
       (if (eq window-system 'x)
 	  (progn
 	    (set-default-font "Consolas-10")
-	    (set-frame-height (selected-frame) 70)
-	    (set-frame-width (selected-frame) 160)
+		(if (string-match (terminal-name) ":0.1")
+			(set-default-font "Consolas-11"))
 	    (set-frame-name "emacs")
 	    (require 'color-theme)
 	    (color-theme-initialize)
@@ -224,11 +236,15 @@
 	    ;(color-theme-subtle-hacker)
 	    ;(color-theme-greiner)
 	    (color-theme-tango)
+	    (set-frame-height (selected-frame) 70)
+	    (set-frame-width (selected-frame) 160)
+	    (set-frame-height (selected-frame) 70)
+	    (set-frame-width (selected-frame) 160)
 	  ))
 
       (setq inferior-lisp-program "/usr/bin/clisp")
       ;;(add-to-list 'load-path "the path of your slime directory")
-      (require 'slime)
+      ;(require 'slime)
       (slime-setup)
 
 	  ;(require 'flymake)
@@ -240,25 +256,28 @@
 
       (add-hook 'lua-mode-hook 'turn-on-font-lock)
       ;(add-hook 'lua-mode-hook 'hs-minor-mode)
-	  (require 'flymake-lua)
+	  ;(require 'flymake-lua)
+	  (autoload 'flymake-lua-load "flymake-lua")
 	  (add-hook 'lua-mode-hook 'flymake-lua-load)
 
 
-	  (require 'flymake-python)
+	  ;(require 'flymake-python)
+	  (autoload 'flymake-python-load "flymake-python")
 	  (add-hook 'python-mode-hook 'flymake-python-load)
 
-	  (require 'flymake-ruby)
-	  (add-hook 'python-mode-hook 'flymake-ruby-load)
+	  ;(require 'flymake-ruby)
+	  (autoload 'flymake-ruby-load "flymake-ruby")
+	  (add-hook 'ruby-mode-hook 'flymake-ruby-load)
 
 
 
-      (setq load-path
-	    (cons (expand-file-name "~/vm_stuff/llvm/llvm-2.3/utils/emacs") load-path))
-      (require 'llvm-mode)
+      ;; (setq load-path
+	  ;;   (cons (expand-file-name "~/vm_stuff/llvm/llvm-2.3/utils/emacs") load-path))
+      ;; (require 'llvm-mode)
 
-      (require 'php-mode)
+      ;(require 'php-mode)
 	  
-	  (require 'gist)
+	  ;(require 'gist)
 
       (defun djcb-opacity-modify (&optional dec)
 	"modify the transparency of the emacs frame; if DEC is t,
@@ -285,7 +304,39 @@
       (add-hook 'c++-mode-hook 'c++-xref-hook)
       (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
       (setq org-log-done t)
-      (global-set-key [(f8)] 'wicked/toggle-w3m))
+      (global-set-key [(f8)] 'wicked/toggle-w3m)
+
+
+	  (require 'package)
+	  (add-to-list 'package-archives
+				   '("marmalade" . "http://marmalade-repo.org/packages/") t)
+	  (package-initialize)
+
+	  
+	  ;; clojure-mode
+	  ;;(add-to-list 'auto-mode-alist '("\\.clj$" . clojure-mode))
+	  ;;(require 'clojure-mode)
+
+	  ;; swank-clojure
+	  ;;(add-to-list 'load-path "~/sw/swank-clojure/src/emacs")
+
+	  ;; (setq swank-clojure-jar-path "/usr/share/java/clojure.jar"
+	  ;; 		swank-clojure-extra-classpaths (list
+	  ;; 										"~/sw/swank-clojure/src/main/clojure"))
+
+
+	  ;; (require 'swank-clojure-autoload)
+
+	  ;; ;; slime
+	  ;; (eval-after-load "slime" 
+	  ;; 	'(progn (slime-setup '(slime-repl))))
+
+	  ;; ;; (add-to-list 'load-path "~/opt/slime")
+	  ;; (require 'slime)
+	  ;; (slime-setup)
+
+
+)
 
 
 (when (eq machine 'odysseus)
@@ -329,7 +380,7 @@
 
 
 (defun flymake-get-tex-args (file-name)
-  (list "latex" (list "-file-line-error" "-draftmode" "-interaction=nonstopmode" file-name)))
+  (list "pdflatex" (list "-file-line-error" "-draftmode" "-interaction=nonstopmode" file-name)))
 
 ;(defun flymake-get-tex-args (file-name)
 ;  (list "pdflatex" (list "-file-line-error" "-draftmode" "-interaction=nonstopmode" file-name)))
@@ -340,6 +391,51 @@
              ;(set-pairs '("(" "{" "[" "\"" "\'"))
              ;(auto-fill-mode 1)
              (flymake-mode t)))
+
+
+;; flymake
+(defun my-flymake-show-next-error()
+  (interactive)
+  (flymake-goto-next-error)
+  (flymake-display-err-menu-for-current-line)
+  )
+
+(defun my-c-mode-common-hook ()
+ ;; my customizations for all of c-mode, c++-mode, objc-mode, java-mode
+ (c-set-offset 'substatement-open 0)
+ ;; other customizations can go here
+
+ (setq c++-tab-always-indent t)
+ (setq c-basic-offset 4)                  ;; Default is 2
+ (setq c-indent-level 4)                  ;; Default is 2
+
+ (setq tab-stop-list '(4 8 12 16 20 24 28 32 36 40 44 48 52 56 60))
+ (setq tab-width 4)
+ (setq indent-tabs-mode t)  ; use spaces only if nil
+ (flymake-mode t)
+
+
+;; Flymake does not recognize warnings in GCC 4.5, fix this
+(add-to-list
+ 'flymake-err-line-patterns
+ '(" *\\(\\[javac\\] *\\)?\\(\\([a-zA-Z]:\\)?[^:(       \n]+\\):\\([0-9]+\\):[0-9]+:[   \n]*\\(.+\\)" 2 4 nil 5))
+
+;; (global-set-key "C-cC-v" 'my-flymake-show-next-error)
+;; (global-set-key (kbd "C-c C-v") 'my-flymake-show-next-error)
+ )
+
+(add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
+
+
+(when (eq machine 'mclovin)
+
+
+
+
+
+)
+
+
 
 ;;; (autoload 'python-mode "python-mode" "Python Mode." t)
 ;;; (add-to-list 'auto-mode-alist '("\\.py\\'" . python-mode))
@@ -420,3 +516,6 @@
 
 ;;; (mac-read-environment-vars-from-shell)
 ;;; (mac-add-path-to-exec-path)
+
+
+
