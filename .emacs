@@ -235,7 +235,7 @@
 	    ;(color-theme-blue-mood)
 	    ;(color-theme-subtle-hacker)
 	    ;(color-theme-greiner)
-	    (color-theme-tango)
+	    ;(color-theme-tango)
 	    (set-frame-height (selected-frame) 70)
 	    (set-frame-width (selected-frame) 160)
 	    (set-frame-height (selected-frame) 70)
@@ -268,6 +268,27 @@
 	  ;(require 'flymake-ruby)
 	  (autoload 'flymake-ruby-load "flymake-ruby")
 	  (add-hook 'ruby-mode-hook 'flymake-ruby-load)
+
+
+	  (require 'flymake)
+	  (defun flymake-get-tex-args (file-name)
+	  	(list "pdflatex"
+	  		  (list "-file-line-error" "-draftmode" "-interaction=nonstopmode" file-name)))
+	  ;; (add-hook 'LaTeX-mode-hook 'flymake-mode)
+
+	  (add-hook 'LaTeX-mode-hook 'flyspell-mode)
+	  (add-hook 'LaTeX-mode-hook 'flyspell-buffer)
+
+	  (add-hook 'LaTeX-mode-hook 'reftex-mode)
+
+	  (add-hook 'LaTeX-mode-hook 
+		(lambda ()
+		  (set-fill-column 100)
+		  (longlines-mode)
+		  (color-theme-aalto-light)
+		  (setq reftex-plug-into-AUCTeX t)
+		  (setq reftex-default-bibliography '("/home/jason/projects/thesis/thesis.bib"))
+		  ))
 
 
 
@@ -379,18 +400,6 @@
 (setq-default TeX-master nil)
 
 
-(defun flymake-get-tex-args (file-name)
-  (list "pdflatex" (list "-file-line-error" "-draftmode" "-interaction=nonstopmode" file-name)))
-
-;(defun flymake-get-tex-args (file-name)
-;  (list "pdflatex" (list "-file-line-error" "-draftmode" "-interaction=nonstopmode" file-name)))
-
-
-(add-hook 'TeX-mode-hook
-          '(lambda ()
-             ;(set-pairs '("(" "{" "[" "\"" "\'"))
-             ;(auto-fill-mode 1)
-             (flymake-mode t)))
 
 
 ;; flymake
@@ -426,14 +435,6 @@
 
 (add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
 
-
-(when (eq machine 'mclovin)
-
-
-
-
-
-)
 
 
 
