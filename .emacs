@@ -1,3 +1,4 @@
+
 (add-to-list 'load-path "~/.emacs.d/")
 
 (defun set-load-path ()
@@ -40,11 +41,16 @@
 
 ;; inhibit startup message
 (setq inhibit-startup-message t)
+(setq initial-scratch-message nil)
 
 ;; get intermittent messages to stop typing
 ;;(type-break-mode)
 
-(iswitchb-mode 1)
+;; (iswitchb-mode 1)
+
+(require 'ido)
+(ido-mode t)
+
 
 (setq default-tab-width 4)
 
@@ -151,24 +157,28 @@
 	  (setq mouse-wheel-scroll-amount '(0.001))
       (add-hook 'server-switch-hook 'raise-emacs-on-aqua)
       (add-to-list 'exec-path "/Library/Frameworks/Python.framework/Versions/Current/bin/")
-      (add-to-list 'exec-path "/sw/bin")
-      (add-to-list 'exec-path "/usr/local/git/bin")
-      (setenv "PATH" (concat (getenv "PATH") ":/usr/local/bin:/usr/texbin"))
+	  (add-to-list 'exec-path "/usr/local/homebrew/bin")
+	  (add-to-list 'exec-path (expand-file-name "~/bin"))
+      (setenv "PATH" (concat (getenv "PATH") (concat ":" (expand-file-name "~/bin:/usr/local/bin:/usr/texbin"))))
       (setq shell-file-name "/bin/zsh"))
 
 (show-paren-mode t)
 (setq show-paren-style 'expression)
 
 (custom-set-variables
-  ;; custom-set-variables was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(custom-safe-themes (quote ("8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" "cd70962b469931807533f5ab78293e901253f5eeb133a46c2965359f23bfb2ea" "06f0b439b62164c6f8f84fdda32b62fb50b6d00e8b01c2208e55543a6337433a" "cf08ae4c26cacce2eebff39d129ea0a21c9d7bf70ea9b945588c1c66392578d1" "1157a4055504672be1df1232bed784ba575c60ab44d8e6c7b3800ae76b42f8bd" "52588047a0fe3727e3cd8a90e76d7f078c9bd62c0b246324e557dfa5112e0d0c" "5ee12d8250b0952deefc88814cf0672327d7ee70b16344372db9460e9a0e3ffc" "1b8d67b43ff1723960eb5e0cba512a2c7a2ad544ddb2533a90101fd1852b426e" "d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" "60f04e478dedc16397353fb9f33f0d895ea3dab4f581307fbf0aa2f07e658a40" "0f0e3af1ec61d04ff92f238b165dbc6d2a7b4ade7ed9812b4ce6b075e08f49fe" "e16a771a13a202ee6e276d06098bc77f008b73bbac4d526f160faa2d76c1dd0e" "73fe242ddbaf2b985689e6ec12e29fab2ecd59f765453ad0e93bc502e6e478d6" "636ecbf1091fbc99d95526d7a3a4810d1ccb58997e58bd3184863821303553f3" "f3d2144fed1adb27794a45e61166e98820ab0bbf3cc7ea708e4bf4b57447ee27" "99cbc2aaa2b77374c2c06091494bd9d2ebfe6dc5f64c7ccdb36c083aff892f7d" "f5e56ac232ff858afb08294fc3a519652ce8a165272e3c65165c42d6fe0262a0" "d2622a2a2966905a5237b54f35996ca6fda2f79a9253d44793cfe31079e3c92b" "501caa208affa1145ccbb4b74b6cd66c3091e41c5bb66c677feda9def5eab19c" "72cc9ae08503b8e977801c6d6ec17043b55313cda34bcf0e6921f2f04cf2da56" "e439d894bf9406baf73056cf7e3c913ee5c794b6adadbbb9f614aebed0fd9ce7" "9117c98819cfdeb59780cb43e5d360ff8a5964d7dd9783b01708bda83098b9fd" "4870e6cb6f0a70c14ee73db30b69a8a1f08d6ec9a689c366e88636fb81e8022d" "e992575f7c09459bfc190e6776b8f5f96964023e98267a87fb3094e7c9686776" "36afe64261e1de73fcfadedf154e4bc2c9ec1969bde0c21798d31366897bc4d2" default)))
  '(display-time-mode t)
  '(ecb-options-version "2.32")
  '(flymake-allowed-file-name-masks (quote (("\\.c\\'" flymake-simple-make-init) ("\\.cpp\\'" flymake-simple-make-init) ("\\.cc\\'" flymake-simple-make-init) ("\\.xml\\'" flymake-xml-init) ("\\.html?\\'" flymake-xml-init) ("\\.cs\\'" flymake-simple-make-init) ("\\.p[ml]\\'" flymake-perl-init) ("\\.php[345]?\\'" flymake-php-init) ("\\.h\\'" flymake-master-make-header-init flymake-master-cleanup) ("\\.java\\'" flymake-simple-make-java-init flymake-simple-java-cleanup) ("[0-9]+\\.tex\\'" flymake-master-tex-init flymake-master-cleanup) ("\\.tex\\'" flymake-simple-tex-init) ("\\.idl\\'" flymake-simple-make-init))))
+ '(ns-alternate-modifier (quote super))
+ '(ns-command-modifier (quote meta))
  '(paren-match-face (quote paren-face-match-light))
  '(paren-sexp-mode t)
+ '(safe-local-variable-values (quote ((TeX-master . "../thesis") (TeX-master . "../thesis.tex"))))
  '(show-paren-mode t))
 
 ;;(push '("\\.cc$" flymake-cc-init) flymake-allowed-file-name-masks)
@@ -180,12 +190,11 @@
 
 
 (custom-set-faces
-  ;; custom-set-faces was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
- '(diff-added ((t (:foreground "Dark Green"))) t)
- '(diff-removed ((t (:foreground "Red"))) t))
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(variable-pitch ((t (:height 160 :family "Georgia")))))
 
 (when (eq machine 'giles)
       (require 'php-mode)
@@ -519,4 +528,194 @@
 ;;; (mac-add-path-to-exec-path)
 
 
+(defun google ()
+  "Google the selected region if any, display a query prompt otherwise."
+  (interactive)
+  (browse-url
+   (concat
+    "http://www.google.com/search?ie=utf-8&oe=utf-8&q="
+    (url-hexify-string (if mark-active
+         (buffer-substring (region-beginning) (region-end))
+       (read-string "Google: "))))))
+
+
+(when (or (string-match "cswireless-16" (system-name)) (string-match "Jasons-MacBook-Air" (system-name)))
+
+  ;; (require 'writegood-mode)
+  (global-set-key "\C-cg" 'writegood-mode)
+
+
+  ;;(add-to-list 'exec-path "/Users/jason/local/godi/bin")
+  ;;(add-to-list 'exec-path "/Users/jason/local/godi/sbin")
+
+  (setenv "PATH" (concat (getenv "PATH") ":/usr/local/homebrew/bin"))
+
+
+  ;;(setq ispell-extra-args '("-d" "/Library/Application Support/cocoAspell/aspell6-en-6.0-0/en.multi"))
+  (setq-default ispell-program-name "aspell")
+  ;;(setq ispell-extra-args '("-d" "/usr/local/homebrew/bin/aspell"))
+  (setq ispell-extra-args '("--sug-mode=ultra"))
+
+  (add-hook 'LaTeX-mode-hook 'flyspell-mode)
+  ;(add-hook 'LaTeX-mode-hook 'flyspell-buffer)
+  (add-hook 'LaTeX-mode-hook 'reftex-mode)
+  (add-hook 'LaTeX-mode-hook 
+			(lambda ()
+			  (set-fill-column 100)
+			  (longlines-mode)
+			  ;(color-theme-aalto-light)
+			  (setq reftex-plug-into-AUCTeX t)
+			  (setq reftex-default-bibliography '("/Users/jason/Desktop/thesis/thesis.bib"))
+			  (variable-pitch-mode t)
+			  ;; (font-lock-add-keywords nil
+			  ;; 						  '(("\\<\\(FIXME\\|TODO\\|BUG\\):" 1 font-lock-warning-face t)))
+
+			  ;; (font-lock-add-keywords nil
+			  ;; 						  '(("\\<TODO\\>" 1 font-lock-warning-face t)))
+
+			  (font-lock-add-keywords nil 
+									  '(("\\<\\(FIXME\\|TODO\\|XXX+\\|BUG\\):" 
+										 1 font-lock-warning-face prepend)))))
+
+			  
+
+  ;;(set-default-font "Consolas-13")
+  ;;(set-default-font "Lucida Grande-13")
+
+
+  (when (>= emacs-major-version 24)
+	(require 'package)
+	(package-initialize)
+	;; (add-to-list 'package-archives
+	;; 			   '("marmalade" . "http://marmalade-repo.org/packages/") t)
+	(setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
+							 ("marmalade" . "http://marmalade-repo.org/packages/")
+							 ("melpa" . "http://melpa.milkbox.net/packages/")
+							 ("org" . "http://orgmode.org/elpa/"))))
+
+
+  (custom-set-faces
+   ;; custom-set-faces was added by Custom.
+   ;; If you edit it by hand, you could mess it up, so be careful.
+   ;; Your init file should contain only one such instance.
+   ;; If there is more than one, they won't work right.
+										;'(echo-area ((t (:stipple nil :strike-through nil :underline nil :slant normal :weight normal :width normal :family "Inconsolata"))))
+   ;; '(hl-sentence-face ((t (:foreground "white"))) t)
+   ;; '(variable-pitch ((t (:foreground "gray80" :height 170 :family "Cochin")))))
+
+   ;'(variable-pitch ((t (:height 170 :family "Times"))))
+   ;'(variable-pitch ((t (:height 170 :family "Lucida Grande"))))
+   ;'(variable-pitch ((t (:family "Lucida Grande"))))
+   ;'(variable-pitch ((t (:size 24 :family "Georgia"))))
+
+   '(variable-pitch ((t (:height 160 :family "Georgia"))))
+   )
+
+(add-to-list 'custom-theme-load-path "~/.emacs.d/themes")
+(add-to-list 'load-path "~/.emacs.d/themes")
+
+
+;(load-theme whiteboard)
+;(load-theme adwaita)
+(load-theme 'monokai)
+
+;(load-theme 'tomorrow-night-bright)
+
+;(load-theme 'sanityinc-tomorrow-bright)
+
+;(add-to-list 'load-path "~/.emacs.d/vendor/emacs-powerline")
+(require 'powerline)
+(powerline-default-theme)
+
+
+(add-to-list 'load-path "~/.emacs.d/org-impress-js.el")
+(require 'org-impress-js)
+;C-u <TAB>
+
+
+(require 'helm-config)
+;(global-set-key (kbd "C-c h") 'helm-mini)
+;(helm-mode 1)
+
+(setq weather-metno-location-name "Brooklyn, USA"
+      weather-metno-location-latitude 40.708441
+      weather-metno-location-longitude -73.921466)
+
+
+
+(defun esk-pretty-fn ()
+  (font-lock-add-keywords nil `(("(\\(\\<fn\\>\\)"
+								 (0 (progn (compose-region (match-beginning 1)
+														   (match-end 1)
+														   "\u0192"
+														   'decompose-region)))))))
+;;(add-hook 'clojure-mode-hook 'esk-pretty-fn)
+
+
+(require 'pretty-mode)
+(global-pretty-mode 1)
+(add-hook 'clojure-mode-hook 'turn-on-pretty-mode)
+
+
+)
+
+
+
+(global-set-key [(meta x)] 'smex)
+(global-set-key [(shift meta x)] 'smex-major-mode-commands)
+
+(require 'ace-jump-mode)
+(define-key global-map (kbd "C-c SPC") 'ace-jump-mode)
+
+
+;smart parens
+;rainbow--delimiters
+;nrepl
+;flycheck
+;mrev?
+;helm
+
+(require 'yasnippet)
+(yas-global-mode 1)
+
+;; Completing point by some yasnippet key
+(defun yas-ido-expand ()
+  "Lets you select (and expand) a yasnippet key"
+  (interactive)
+    (let ((original-point (point)))
+      (while (and
+              (not (= (point) (point-min) ))
+              (not
+               (string-match "[[:space:]\n]" (char-to-string (char-before)))))
+        (backward-word 1))
+    (let* ((init-word (point))
+           (word (buffer-substring init-word original-point))
+           (list (yas-active-keys)))
+      (goto-char original-point)
+      (let ((key (remove-if-not
+                  (lambda (s) (string-match (concat "^" word) s)) list)))
+        (if (= (length key) 1)
+            (setq key (pop key))
+          (setq key (ido-completing-read "key: " list nil nil word)))
+        (delete-char (- init-word original-point))
+        (insert key)
+        (yas-expand)))))
+ (define-key yas-minor-mode-map (kbd "<C-tab>")     'yas-ido-expand)
+
+(require 'recentf)
+(defun recentf-ido-find-file ()
+  "Find a recent file using Ido."
+  (interactive)
+  (let ((file (ido-completing-read "Choose recent file: " recentf-list nil t)))
+    (when file
+      (find-file file))))
+
+
+(set-frame-parameter (selected-frame) 'alpha '(97 90))
+
+
+(set-default-font "Source Code Pro-12")
+;(set-default-font "Inconsolata-15")
+;;(set-default-font "Menlo-14")
+;(set-frame-font "Menlo:pixelsize=18")
 
