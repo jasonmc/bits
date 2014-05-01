@@ -1,7 +1,4 @@
-
 (add-to-list 'load-path "~/.emacs.d/")
-
-
 
 (setq *is-a-mac* (eq system-type 'darwin))
 (setq *is-cocoa-emacs* (and *is-a-mac* (eq window-system 'ns)))
@@ -9,21 +6,21 @@
 (if (eq system-type 'darwin)
     (setq system-name (car (split-string system-name "\\."))))
 
-(if (string-match "odysseus" (system-name))
-    (setq machine 'odysseus)
-  (if (string-match "giles" (system-name))
-	  (setq machine 'giles)
-	(if (string-match "mclovin" (system-name))
-		(setq machine 'mclovin)
-	(if (string-match "turing.scss.tcd.ie" (system-name))
-		(setq machine 'turing)
-		(setq machine 'other)))))
+
+(cond 
+ ((string-match "Jasons-MacBook-Air" (system-name)) (setq machine 'mba))
+ ((string-match "odysseus" (system-name)) (setq machine 'odysseus))
+ ((string-match "giles" (system-name)) (setq machine 'giles))
+ ((string-match "mclovin" (system-name)) (setq machine 'mclovin))
+ ((string-match "turing.scss.tcd.ie" (system-name))	(setq machine 'turing))
+ (t	(setq machine 'other)))
+
 
 (when (or (or (eq window-system 'ns) (eq window-system 'x) (eq window-system 'w32)))
-      (mouse-wheel-mode t)
-      (scroll-bar-mode -1)
-      (blink-cursor-mode 0)
-      (tool-bar-mode 0))
+  (mouse-wheel-mode t)
+  (scroll-bar-mode -1)
+  (blink-cursor-mode 0)
+  (tool-bar-mode 0))
 
 (when (eq window-system 'w32)
   (menu-bar-mode -1))
@@ -68,7 +65,7 @@
   (insert "*")
   (insert-date-string)
   (insert "\n\n")
-)
+  )
 
 (defun copy-line (arg)
   "Copy lines (as many as prefix argument) in the kill ring"
@@ -81,10 +78,10 @@
 
 (defun mark-line ()
   "Marks a line from start of indentation to end"
-   (interactive "p")
-   (back-to-indentation)
-   (set-mark-command)
-   (move-end-of-line))
+  (interactive "p")
+  (back-to-indentation)
+  (set-mark-command)
+  (move-end-of-line))
 
 ;;(global-set-key (kbd "C-c l") 'mark-line)
 ;;(global-set-key "\C-c\C-l" "\C-a\C- \C-e\M-w")
@@ -108,19 +105,19 @@
       ;; Currently in a w3m buffer
       ;; Bury buffers until you reach a non-w3m one
       (while (derived-mode-p 'w3m-mode)
-	(bury-buffer))
+		(bury-buffer))
     ;; Not in w3m
     ;; Find the first w3m buffer
     (let ((list (buffer-list)))
       (while list
-	(if (with-current-buffer (car list)
-	      (derived-mode-p 'w3m-mode))
-	    (progn
-	      (switch-to-buffer (car list))
-	      (setq list nil))
-	  (setq list (cdr list))))
+		(if (with-current-buffer (car list)
+			  (derived-mode-p 'w3m-mode))
+			(progn
+			  (switch-to-buffer (car list))
+			  (setq list nil))
+		  (setq list (cdr list))))
       (unless (derived-mode-p 'w3m-mode)
-	(call-interactively 'w3m)))))
+		(call-interactively 'w3m)))))
 
 (defalias 'qrr 'query-replace-regexp)
 
@@ -136,13 +133,11 @@
 
 
 (add-hook 'c-mode-common-hook
-               (lambda ()
-                (font-lock-add-keywords nil
-                 '(("\\&lt;\\(FIXME\\|TODO\\|BUG\\):" 1 font-lock-warning-face t)))))
-
-
-;(if window-system 
-;    ((add-hook 'server-switch-hook 'raise-frame)))
+		  (lambda ()
+			(font-lock-add-keywords nil
+									'(("\\&lt;\\(FIXME\\|TODO\\|BUG\\):" 1 font-lock-warning-face t)))))
+;;(if window-system 
+;;    ((add-hook 'server-switch-hook 'raise-frame)))
 
 ;; Auto-raise Emacs on activation
 ;;; (if window-system
@@ -152,18 +147,18 @@
 
 ;; Auto-raise Emacs on activation
 (defun raise-emacs-on-aqua() 
-    (shell-command "osascript -e 'tell application \"Emacs\" to activate' &amp;"))
+  (shell-command "osascript -e 'tell application \"Emacs\" to activate' &amp;"))
 
 (when *is-a-mac*
-	  ;; Make mouse wheel / trackpad scrolling less jerky
-	  (setq mouse-wheel-scroll-amount '(0.001))
-      (add-hook 'server-switch-hook 'raise-emacs-on-aqua)
-      (add-to-list 'exec-path "/Library/Frameworks/Python.framework/Versions/Current/bin/")
-	  (add-to-list 'exec-path "/usr/local/homebrew/bin")
-	  (add-to-list 'exec-path (expand-file-name "~/bin"))
-      (setenv "PATH" (concat (getenv "PATH") (concat ":" (expand-file-name "~/bin:/usr/local/bin:/usr/texbin"))))
-	  (setenv "PATH" (concat (getenv "PATH") ":/usr/local/homebrew/bin"))
-      (setq shell-file-name "zsh"))
+  ;; Make mouse wheel / trackpad scrolling less jerky
+  (setq mouse-wheel-scroll-amount '(0.001))
+  (add-hook 'server-switch-hook 'raise-emacs-on-aqua)
+  (add-to-list 'exec-path "/Library/Frameworks/Python.framework/Versions/Current/bin/")
+  (add-to-list 'exec-path "/usr/local/homebrew/bin")
+  (add-to-list 'exec-path (expand-file-name "~/bin"))
+  (setenv "PATH" (concat (getenv "PATH") (concat ":" (expand-file-name "~/bin:/usr/local/bin:/usr/texbin"))))
+  (setenv "PATH" (concat (getenv "PATH") ":/usr/local/homebrew/bin"))
+  (setq shell-file-name "zsh"))
 
 
 
@@ -187,11 +182,6 @@
 ;;(push '("\\.cc$" flymake-cc-init) flymake-allowed-file-name-masks)
 
 
-
-
-
-
-
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -202,30 +192,30 @@
  '(variable-pitch ((t (:height 160 :family "Georgia")))))
 
 (when (eq machine 'giles)
-      (require 'php-mode)
+  (require 'php-mode)
 
-	  (when *is-cocoa-emacs*
-		(require 'color-theme)
-		(color-theme-initialize)
-		;(color-theme-marquardt)
-		;(color-theme-robin-hood)
-		(color-theme-greiner))
+  (when *is-cocoa-emacs*
+	(require 'color-theme)
+	(color-theme-initialize)
+	;;(color-theme-marquardt)
+	;;(color-theme-robin-hood)
+	(color-theme-greiner))
 
 
-	   (setq-default ispell-program-name "aspell")
-	   ;;(setq ispell-dictionary-alist
-	   ;;   '((nil
-	   ;;	 "[A-Za-z]" "[^A-Za-z]" "[']" nil
-	   ;;	 ("-B" "-d" "english" "--dict-dir"
-	   ;;	  "/Library/Application Support/cocoAspell/aspell6-en-6.0-0")
-	   ;;	 nil iso-8859-1)))
-	   (setq ispell-extra-args '("-d" "/Library/Application Support/cocoAspell/aspell6-en-6.0-0/en.multi")))
+  (setq-default ispell-program-name "aspell")
+  ;;(setq ispell-dictionary-alist
+  ;;   '((nil
+  ;;	 "[A-Za-z]" "[^A-Za-z]" "[']" nil
+  ;;	 ("-B" "-d" "english" "--dict-dir"
+  ;;	  "/Library/Application Support/cocoAspell/aspell6-en-6.0-0")
+  ;;	 nil iso-8859-1)))
+  (setq ispell-extra-args '("-d" "/Library/Application Support/cocoAspell/aspell6-en-6.0-0/en.multi")))
 
 (when (or (eq machine 'mclovin) (eq machine 'giles))
-      (setq ange-ftp-local-host-regexp "\\.tcd\\.ie$\\|\\.[0-9]+\\.[0-9]+$\\|^[^.]*$")
-      (setq ange-ftp-gateway-host "ftp-proxy.cs.tcd.ie")
-      (setq ange-ftp-smart-gateway-port "24")
-      (setq ange-ftp-smart-gateway t))
+  (setq ange-ftp-local-host-regexp "\\.tcd\\.ie$\\|\\.[0-9]+\\.[0-9]+$\\|^[^.]*$")
+  (setq ange-ftp-gateway-host "ftp-proxy.cs.tcd.ie")
+  (setq ange-ftp-smart-gateway-port "24")
+  (setq ange-ftp-smart-gateway t))
 
 
 (defun c++-xref-hook ()
@@ -234,11 +224,11 @@
   (setq load-path (cons "/home/jason/sw/xref/emacs" load-path))
   (setq exec-path (cons "/home/jason/sw/xref" exec-path))
   (load "xrefactory")
-)
+  )
 
 (when (eq machine 'mclovin)
 
-      (if (eq window-system 'x)
+  (if (eq window-system 'x)
 	  (progn
 	    (set-default-font "Consolas-10")
 		(if (string-match (terminal-name) ":0.1")
@@ -246,75 +236,75 @@
 	    (set-frame-name "emacs")
 	    (require 'color-theme)
 	    (color-theme-initialize)
-	    ;(color-theme-blue-mood)
-	    ;(color-theme-subtle-hacker)
-	    ;(color-theme-greiner)
-	    ;(color-theme-tango)
+		;;(color-theme-blue-mood)
+		;;(color-theme-subtle-hacker)
+		;;(color-theme-greiner)
+		;;(color-theme-tango)
 	    (set-frame-height (selected-frame) 70)
 	    (set-frame-width (selected-frame) 160)
 	    (set-frame-height (selected-frame) 70)
 	    (set-frame-width (selected-frame) 160)
-	  ))
+		))
 
-      (setq inferior-lisp-program "/usr/bin/clisp")
-      ;;(add-to-list 'load-path "the path of your slime directory")
-      ;(require 'slime)
-      (slime-setup)
+  (setq inferior-lisp-program "/usr/bin/clisp")
+  ;;(add-to-list 'load-path "the path of your slime directory")
+  ;;(require 'slime)
+  (slime-setup)
 
-	  ;(require 'flymake)
-	  ;(add-hook 'find-file-hook 'flymake-find-file-hook)
-
-
-      (setq auto-mode-alist (cons '("\\.lua$" . lua-mode) auto-mode-alist))
-      (autoload 'lua-mode "lua-mode" "Lua editing mode." t)
-
-      (add-hook 'lua-mode-hook 'turn-on-font-lock)
-      ;(add-hook 'lua-mode-hook 'hs-minor-mode)
-	  ;(require 'flymake-lua)
-	  (autoload 'flymake-lua-load "flymake-lua")
-	  (add-hook 'lua-mode-hook 'flymake-lua-load)
+  ;;(require 'flymake)
+  ;;(add-hook 'find-file-hook 'flymake-find-file-hook)
 
 
-	  ;(require 'flymake-python)
-	  (autoload 'flymake-python-load "flymake-python")
-	  (add-hook 'python-mode-hook 'flymake-python-load)
+  (setq auto-mode-alist (cons '("\\.lua$" . lua-mode) auto-mode-alist))
+  (autoload 'lua-mode "lua-mode" "Lua editing mode." t)
 
-	  ;(require 'flymake-ruby)
-	  (autoload 'flymake-ruby-load "flymake-ruby")
-	  (add-hook 'ruby-mode-hook 'flymake-ruby-load)
-
-
-	  (require 'flymake)
-	  (defun flymake-get-tex-args (file-name)
-	  	(list "pdflatex"
-	  		  (list "-file-line-error" "-draftmode" "-interaction=nonstopmode" file-name)))
-	  ;; (add-hook 'LaTeX-mode-hook 'flymake-mode)
-
-	  (add-hook 'LaTeX-mode-hook 'flyspell-mode)
-	  (add-hook 'LaTeX-mode-hook 'flyspell-buffer)
-
-	  (add-hook 'LaTeX-mode-hook 'reftex-mode)
-
-	  (add-hook 'LaTeX-mode-hook 
-		(lambda ()
-		  (set-fill-column 100)
-		  (longlines-mode)
-		  (color-theme-aalto-light)
-		  (setq reftex-plug-into-AUCTeX t)
-		  (setq reftex-default-bibliography '("/home/jason/projects/thesis/thesis.bib"))
-		  ))
+  (add-hook 'lua-mode-hook 'turn-on-font-lock)
+  ;;(add-hook 'lua-mode-hook 'hs-minor-mode)
+  ;;(require 'flymake-lua)
+  (autoload 'flymake-lua-load "flymake-lua")
+  (add-hook 'lua-mode-hook 'flymake-lua-load)
 
 
+  ;;(require 'flymake-python)
+  (autoload 'flymake-python-load "flymake-python")
+  (add-hook 'python-mode-hook 'flymake-python-load)
 
-      ;; (setq load-path
-	  ;;   (cons (expand-file-name "~/vm_stuff/llvm/llvm-2.3/utils/emacs") load-path))
-      ;; (require 'llvm-mode)
+  ;;(require 'flymake-ruby)
+  (autoload 'flymake-ruby-load "flymake-ruby")
+  (add-hook 'ruby-mode-hook 'flymake-ruby-load)
 
-      ;(require 'php-mode)
-	  
-	  ;(require 'gist)
 
-      (defun djcb-opacity-modify (&optional dec)
+  (require 'flymake)
+  (defun flymake-get-tex-args (file-name)
+	(list "pdflatex"
+		  (list "-file-line-error" "-draftmode" "-interaction=nonstopmode" file-name)))
+  ;; (add-hook 'LaTeX-mode-hook 'flymake-mode)
+
+  (add-hook 'LaTeX-mode-hook 'flyspell-mode)
+  (add-hook 'LaTeX-mode-hook 'flyspell-buffer)
+
+  (add-hook 'LaTeX-mode-hook 'reftex-mode)
+
+  (add-hook 'LaTeX-mode-hook 
+			(lambda ()
+			  (set-fill-column 100)
+			  (longlines-mode)
+			  (color-theme-aalto-light)
+			  (setq reftex-plug-into-AUCTeX t)
+			  (setq reftex-default-bibliography '("/home/jason/projects/thesis/thesis.bib"))
+			  ))
+
+
+
+  ;; (setq load-path
+  ;;   (cons (expand-file-name "~/vm_stuff/llvm/llvm-2.3/utils/emacs") load-path))
+  ;; (require 'llvm-mode)
+
+  ;;(require 'php-mode)
+  
+  ;;(require 'gist)
+
+  (defun djcb-opacity-modify (&optional dec)
 	"modify the transparency of the emacs frame; if DEC is t,
     decrease the transparency, otherwise increase it in 10%-steps"
 	(let* ((alpha-or-nil (frame-parameter nil 'alpha)) ; nil before setting
@@ -323,83 +313,83 @@
 	  (when (and (>= newalpha frame-alpha-lower-limit) (<= newalpha 100))
 	    (modify-frame-parameters nil (list (cons 'alpha newalpha))))))
 
-      ;; C-8 will increase opacity (== decrease transparency)
-      ;; C-9 will decrease opacity (== increase transparency
-      ;; C-0 will returns the state to normal
-      (global-set-key (kbd "C-8") '(lambda()(interactive)(djcb-opacity-modify)))
-      (global-set-key (kbd "C-9") '(lambda()(interactive)(djcb-opacity-modify t)))
-      (global-set-key (kbd "C-0") '(lambda()(interactive)
-				     (modify-frame-parameters nil `((alpha . 100)))))
+  ;; C-8 will increase opacity (== decrease transparency)
+  ;; C-9 will decrease opacity (== increase transparency
+  ;; C-0 will returns the state to normal
+  (global-set-key (kbd "C-8") '(lambda()(interactive)(djcb-opacity-modify)))
+  (global-set-key (kbd "C-9") '(lambda()(interactive)(djcb-opacity-modify t)))
+  (global-set-key (kbd "C-0") '(lambda()(interactive)
+								 (modify-frame-parameters nil `((alpha . 100)))))
 
 
-	  (global-set-key [(mouse-13)] 'scroll-down)
-	  (global-set-key [(mouse-15)] 'scroll-up)
+  (global-set-key [(mouse-13)] 'scroll-down)
+  (global-set-key [(mouse-15)] 'scroll-up)
 
-      (add-hook 'c-mode-hook 'c++-xref-hook)
-      (add-hook 'c++-mode-hook 'c++-xref-hook)
-      (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
-      (setq org-log-done t)
-      (global-set-key [(f8)] 'wicked/toggle-w3m)
-
-
-	  
-	  ;; clojure-mode
-	  ;;(add-to-list 'auto-mode-alist '("\\.clj$" . clojure-mode))
-	  ;;(require 'clojure-mode)
-
-	  ;; swank-clojure
-	  ;;(add-to-list 'load-path "~/sw/swank-clojure/src/emacs")
-
-	  ;; (setq swank-clojure-jar-path "/usr/share/java/clojure.jar"
-	  ;; 		swank-clojure-extra-classpaths (list
-	  ;; 										"~/sw/swank-clojure/src/main/clojure"))
+  (add-hook 'c-mode-hook 'c++-xref-hook)
+  (add-hook 'c++-mode-hook 'c++-xref-hook)
+  (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
+  (setq org-log-done t)
+  (global-set-key [(f8)] 'wicked/toggle-w3m)
 
 
-	  ;; (require 'swank-clojure-autoload)
+  
+  ;; clojure-mode
+  ;;(add-to-list 'auto-mode-alist '("\\.clj$" . clojure-mode))
+  ;;(require 'clojure-mode)
 
-	  ;; ;; slime
-	  ;; (eval-after-load "slime" 
-	  ;; 	'(progn (slime-setup '(slime-repl))))
+  ;; swank-clojure
+  ;;(add-to-list 'load-path "~/sw/swank-clojure/src/emacs")
 
-	  ;; ;; (add-to-list 'load-path "~/opt/slime")
-	  ;; (require 'slime)
-	  ;; (slime-setup)
+  ;; (setq swank-clojure-jar-path "/usr/share/java/clojure.jar"
+  ;; 		swank-clojure-extra-classpaths (list
+  ;; 										"~/sw/swank-clojure/src/main/clojure"))
 
 
-)
+  ;; (require 'swank-clojure-autoload)
+
+  ;; ;; slime
+  ;; (eval-after-load "slime" 
+  ;; 	'(progn (slime-setup '(slime-repl))))
+
+  ;; ;; (add-to-list 'load-path "~/opt/slime")
+  ;; (require 'slime)
+  ;; (slime-setup)
+
+
+  )
 
 
 (when (eq machine 'odysseus)
-      (require 'php-mode)
+  (require 'php-mode)
 
-      (setq auto-mode-alist (cons '("\\.lua$" . lua-mode) auto-mode-alist))
-      (autoload 'lua-mode "lua-mode" "Lua editing mode." t)
-      (add-hook 'lua-mode-hook 'turn-on-font-lock)
-      ;(add-hook 'lua-mode-hook 'hs-minor-mode)
+  (setq auto-mode-alist (cons '("\\.lua$" . lua-mode) auto-mode-alist))
+  (autoload 'lua-mode "lua-mode" "Lua editing mode." t)
+  (add-hook 'lua-mode-hook 'turn-on-font-lock)
+  ;;(add-hook 'lua-mode-hook 'hs-minor-mode)
 
-	  (when *is-cocoa-emacs*
-		(require 'color-theme)
-		(color-theme-initialize)
-		;(color-theme-greiner)
-		(color-theme-tango)))
+  (when *is-cocoa-emacs*
+	(require 'color-theme)
+	(color-theme-initialize)
+	;;(color-theme-greiner)
+	(color-theme-tango)))
 
 
 
 
 ;;LaTeX stuff
 (when (or (and (eq window-system 'ns) (or (eq machine 'odysseus) (eq machine 'giles))) (eq machine 'mclovin))
-      (load "auctex.el" nil t t)
-      ;; The following only works with AUCTeX loaded
-      (require 'tex-site)
-      (load "preview-latex.el" nil t t)
-	  (require 'git-emacs))
+  (load "auctex.el" nil t t)
+  ;; The following only works with AUCTeX loaded
+  (require 'tex-site)
+  (load "preview-latex.el" nil t t)
+  (require 'git-emacs))
 
 (when (and (eq window-system 'ns) (or (eq machine 'odysseus) (eq machine 'giles)) )
-      (add-hook 'TeX-mode-hook
-		(lambda ()
-		  (add-to-list 'TeX-output-view-style
-			       '("^pdf$" "."
-				 "/Applications/Skim.app/Contents/SharedSupport/displayline %n %o %b")))))
+  (add-hook 'TeX-mode-hook
+			(lambda ()
+			  (add-to-list 'TeX-output-view-style
+						   '("^pdf$" "."
+							 "/Applications/Skim.app/Contents/SharedSupport/displayline %n %o %b")))))
 
 (setq TeX-auto-save t)
 (setq TeX-parse-self t)
@@ -407,8 +397,6 @@
 (setq-default TeX-PDF-mode t)
 ;; Make emacs aware of multi-file projects
 (setq-default TeX-master nil)
-
-
 
 
 ;; flymake
@@ -419,32 +407,30 @@
   )
 
 (defun my-c-mode-common-hook ()
- ;; my customizations for all of c-mode, c++-mode, objc-mode, java-mode
- (c-set-offset 'substatement-open 0)
- ;; other customizations can go here
+  ;; my customizations for all of c-mode, c++-mode, objc-mode, java-mode
+  (c-set-offset 'substatement-open 0)
+  ;; other customizations can go here
 
- (setq c++-tab-always-indent t)
- (setq c-basic-offset 4)                  ;; Default is 2
- (setq c-indent-level 4)                  ;; Default is 2
+  (setq c++-tab-always-indent t)
+  (setq c-basic-offset 4)                  ;; Default is 2
+  (setq c-indent-level 4)                  ;; Default is 2
 
- (setq tab-stop-list '(4 8 12 16 20 24 28 32 36 40 44 48 52 56 60))
- (setq tab-width 4)
- (setq indent-tabs-mode t)  ; use spaces only if nil
- (flymake-mode t)
+  (setq tab-stop-list '(4 8 12 16 20 24 28 32 36 40 44 48 52 56 60))
+  (setq tab-width 4)
+  (setq indent-tabs-mode t)  ; use spaces only if nil
+  (flymake-mode t)
 
 
-;; Flymake does not recognize warnings in GCC 4.5, fix this
-(add-to-list
- 'flymake-err-line-patterns
- '(" *\\(\\[javac\\] *\\)?\\(\\([a-zA-Z]:\\)?[^:(       \n]+\\):\\([0-9]+\\):[0-9]+:[   \n]*\\(.+\\)" 2 4 nil 5))
+  ;; Flymake does not recognize warnings in GCC 4.5, fix this
+  (add-to-list
+   'flymake-err-line-patterns
+   '(" *\\(\\[javac\\] *\\)?\\(\\([a-zA-Z]:\\)?[^:(       \n]+\\):\\([0-9]+\\):[0-9]+:[   \n]*\\(.+\\)" 2 4 nil 5))
 
-;; (global-set-key "C-cC-v" 'my-flymake-show-next-error)
-;; (global-set-key (kbd "C-c C-v") 'my-flymake-show-next-error)
- )
+  ;; (global-set-key "C-cC-v" 'my-flymake-show-next-error)
+  ;; (global-set-key (kbd "C-c C-v") 'my-flymake-show-next-error)
+  )
 
 (add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
-
-
 
 
 ;;; (autoload 'python-mode "python-mode" "Python Mode." t)
@@ -457,11 +443,11 @@
 ;;;         (set (make-variable-buffer-local 'beginning-of-defun-function)
 ;;;             'py-beginning-of-def-or-class)
 ;;;         (setq outline-regexp "def\\|class ")))
-;(autoload 'py-complete-init "py-complete")
-;(add-hook 'python-mode-hook 'py-complete-init)
-;(autoload 'pycomplete-init "pycomplete")
-;(add-hook 'python-mode-hook 'pycomplete-init)
-;(require 'pycomplete)
+										;(autoload 'py-complete-init "py-complete")
+										;(add-hook 'python-mode-hook 'py-complete-init)
+										;(autoload 'pycomplete-init "pycomplete")
+										;(add-hook 'python-mode-hook 'pycomplete-init)
+										;(require 'pycomplete)
 
 
 ;;; (defvar shell-login-switch nil
@@ -550,7 +536,7 @@
 		(package-install p))))
 
   (provide 'jason-packages)
-)
+  )
 
 (defun ensure-package-installed (&rest packages)
   "Assure every package is installed, ask for installation if it’s not.
@@ -587,7 +573,7 @@
 
   ;;(4clojure ac-ispell ac-nrepl ace-jump-mode ack-and-a-half auctex autopair clojure-cheatsheet cider clojure-snippets clojurescript-mode color-theme-sanityinc-tomorrow color-theme-tango color-theme csharp-mode cyberpunk-theme ein elein flycheck f flymake-tuareg gist gh gnugo go-autocomplete auto-complete go-mode go-snippets google-maps graphviz-dot-mode guru-mode hackernews haskell-mode helm-ack helm-google google helm-spotify helm ibuffer-git ido-ubiquitous ipython js2-mode logito magit git-rebase-mode git-commit-mode markdown-mode monokai-theme multi nrepl clojure-mode nyan-prompt org-jekyll org-plus-contrib ox-reveal org pcache popup powerline pretty-lambdada pretty-mode projectile pkg-info epl protobuf-mode rainbow-blocks rainbow-delimiters request rust-mode s sentence-highlight smart-mode-line smartparens smex solarized-theme dash spotify ssh-config-mode tuareg caml w3m weather weather-metno websocket writegood-mode xkcd yasnippet zenburn-theme)
 
-  (ensure-package-installed 'xkcd 'smex)
+  (ensure-package-installed 'xkcd 'smex 'ace-jump-mode)
 
 
   (global-set-key [(meta x)] (lambda ()
@@ -604,15 +590,13 @@
 									 (global-set-key [(shift meta x)] 'smex-major-mode-commands)
 									 (smex-major-mode-commands)))
 
-)
+  (global-pretty-mode 1)
+  ;;(add-hook 'my-pretty-language-hook 'turn-on-pretty-mode)
+  (add-hook 'clojure-mode-hook 'turn-on-pretty-mode)
+
+  )
 
 (when (string= (system-name) "JMCCANDLESS")
-
-  (require 'pretty-mode)
-   ; if you want to set it globally
-  (global-pretty-mode t)
-   ; if you want to set it only for a specific mode
-   ;;(add-hook 'my-pretty-language-hook 'turn-on-pretty-mode)
 
   (load-theme 'monokai)
 
@@ -620,8 +604,7 @@
 
   (setenv "PATH" (concat (getenv "PATH") ";C:\\Program Files (x86)\\Git\\bin"))
 
-
-  (require 'mustache-mode)
+  (ensure-package-installed 'mustache 'confluence)
 
   ;; (require 'remember)
   ;;   (org-remember-insinuate)
@@ -635,13 +618,11 @@
 
 
   (set-default-font "Consolas-11:antialias=subpixel")
-  ;(set-default-font "Source Code Pro-10:antialias=subpixel")
+  ;;(set-default-font "Source Code Pro-10:antialias=subpixel")
 
 
   (setq projectile-indexing-method 'native)
   (projectile-global-mode)
-
-  (require 'yasnippet)
 
   (defun csharp-set-flycheck-command ()
 	"Set the flycheck command, dynamically, as a side effect.
@@ -669,18 +650,17 @@ the source file name."
   (eval-after-load "flycheck"
 	'(progn
 	   (flycheck-define-checker csharp
-								"A C# syntax checker for dotnet. By default, it uses the Mono
+		 "A C# syntax checker for dotnet. By default, it uses the Mono
 compiler. If you would like to use a different compiler, see
 `csharp-set-flycheck-command'."
-								:command ("gmcs" "-target:module" source)
-								:error-patterns
-								;; WinFormsHello.cs(17,9): error CS0246: The type or namespace name `derp' could not be found. Are you missing an assembly reference?
-								((error line-start (file-name) "(" line "," column "): error " (message) line-end)
-								 (warning line-start (file-name) "(" line "," column "): warning " (message) line-end))
-								:modes csharp-mode)
+		 :command ("gmcs" "-target:module" source)
+		 :error-patterns
+		 ;; WinFormsHello.cs(17,9): error CS0246: The type or namespace name `derp' could not be found. Are you missing an assembly reference?
+		 ((error line-start (file-name) "(" line "," column "): error " (message) line-end)
+		  (warning line-start (file-name) "(" line "," column "): warning " (message) line-end))
+		 :modes csharp-mode)
 	   (add-hook 'flycheck-before-syntax-check-hook  #'csharp-set-flycheck-command)))
 
-  (require 'confluence)
   (setq confluence-url "https://zocdoc.atlassian.net/wiki/rpc/xmlrpc")
 
 
@@ -696,7 +676,7 @@ compiler. If you would like to use a different compiler, see
   (add-to-list 'load-path "~/.emacs.d/org-jira")
   (require 'org-jira)
 
-)
+  )
 
 (defun google ()
   "Google the selected region if any, display a query prompt otherwise."
@@ -705,11 +685,11 @@ compiler. If you would like to use a different compiler, see
    (concat
     "http://www.google.com/search?ie=utf-8&oe=utf-8&q="
     (url-hexify-string (if mark-active
-         (buffer-substring (region-beginning) (region-end))
-       (read-string "Google: "))))))
+						   (buffer-substring (region-beginning) (region-end))
+						 (read-string "Google: "))))))
 
 
-(when (or (string-match "cswireless-16" (system-name)) (string-match "Jasons-MacBook-Air" (system-name)))
+(when (eq machine 'mba)
 
   (global-set-key "\C-cg" 'writegood-mode)
 
@@ -746,18 +726,12 @@ compiler. If you would like to use a different compiler, see
 									  '(("\\<\\(FIXME\\|TODO\\|XXX+\\|BUG\\):" 
 										 1 font-lock-warning-face prepend)))))
 
-  
-
-  ;;(set-default-font "Consolas-13")
-  ;;(set-default-font "Lucida Grande-13")
-
-
   (custom-set-faces
    ;; custom-set-faces was added by Custom.
    ;; If you edit it by hand, you could mess it up, so be careful.
    ;; Your init file should contain only one such instance.
    ;; If there is more than one, they won't work right.
-										;'(echo-area ((t (:stipple nil :strike-through nil :underline nil :slant normal :weight normal :width normal :family "Inconsolata"))))
+   ;;'(echo-area ((t (:stipple nil :strike-through nil :underline nil :slant normal :weight normal :width normal :family "Inconsolata"))))
    ;; '(hl-sentence-face ((t (:foreground "white"))) t)
    ;; '(variable-pitch ((t (:foreground "gray80" :height 170 :family "Cochin")))))
 
@@ -802,10 +776,10 @@ compiler. If you would like to use a different compiler, see
 		weather-metno-location-latitude 40.708441
 		weather-metno-location-longitude -73.921466)
 
-  (require 'pretty-mode)
-  (global-pretty-mode 1)
-  (add-hook 'clojure-mode-hook 'turn-on-pretty-mode)
 
+
+  ;;(set-default-font "Consolas-13")
+  ;;(set-default-font "Lucida Grande-13")
   (set-default-font "Source Code Pro-12")
   ;;(set-default-font "Inconsolata-15")
   ;;(set-default-font "Menlo-14")
@@ -814,29 +788,26 @@ compiler. If you would like to use a different compiler, see
   )
 
 
-(require 'ace-jump-mode)
 (define-key global-map (kbd "C-c SPC") 'ace-jump-mode)
 
 
-;clojure needs:
-;smart parens
-;rainbow--delimiters
+;; clojure needs:
+;; smart parens
+;; rainbow--delimiters
 
 
-
-(require 'yasnippet)
 (yas-global-mode 1)
 
 ;; Completing point by some yasnippet key
 (defun yas-ido-expand ()
   "Lets you select (and expand) a yasnippet key"
   (interactive)
-    (let ((original-point (point)))
-      (while (and
-              (not (= (point) (point-min) ))
-              (not
-               (string-match "[[:space:]\n]" (char-to-string (char-before)))))
-        (backward-word 1))
+  (let ((original-point (point)))
+	(while (and
+			(not (= (point) (point-min) ))
+			(not
+			 (string-match "[[:space:]\n]" (char-to-string (char-before)))))
+	  (backward-word 1))
     (let* ((init-word (point))
            (word (buffer-substring init-word original-point))
            (list (yas-active-keys)))
@@ -849,7 +820,7 @@ compiler. If you would like to use a different compiler, see
         (delete-char (- init-word original-point))
         (insert key)
         (yas-expand)))))
- (define-key yas-minor-mode-map (kbd "<C-tab>")     'yas-ido-expand)
+(define-key yas-minor-mode-map (kbd "<C-tab>")     'yas-ido-expand)
 
 (require 'recentf)
 (defun recentf-ido-find-file ()
@@ -867,4 +838,4 @@ compiler. If you would like to use a different compiler, see
 (when (string= (system-name) "zocubuntu")
   ;;(load-theme 'wombat t)
   ;;(load-theme 'monokai t)
-)
+  )
