@@ -578,8 +578,7 @@
 
 
   (set-default-font "Consolas-11:antialias=subpixel")
-
-										;(set-default-font "Source Code Pro-10:antialias=subpixel")
+  ;(set-default-font "Source Code Pro-10:antialias=subpixel")
 
 
   (menu-bar-mode -1)
@@ -763,6 +762,11 @@ compiler. If you would like to use a different compiler, see
   (global-pretty-mode 1)
   (add-hook 'clojure-mode-hook 'turn-on-pretty-mode)
 
+  (set-default-font "Source Code Pro-12")
+;(set-default-font "Inconsolata-15")
+;;(set-default-font "Menlo-14")
+;(set-frame-font "Menlo:pixelsize=18")
+
 
   )
 
@@ -817,11 +821,6 @@ compiler. If you would like to use a different compiler, see
 
 (set-frame-parameter (selected-frame) 'alpha '(97 90))
 
-
-(set-default-font "Source Code Pro-12")
-;(set-default-font "Inconsolata-15")
-;;(set-default-font "Menlo-14")
-;(set-frame-font "Menlo:pixelsize=18")
 
 
 (when (string= (system-name) "zocubuntu")
