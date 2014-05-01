@@ -191,6 +191,14 @@
  '(diff-removed ((((class color) (min-colors 89)) (:foreground "#dc322f" :background nil))))
  '(variable-pitch ((t (:height 160 :family "Georgia")))))
 
+
+(when (eq machine 'odysseus)
+  (when *is-cocoa-emacs*
+	(require 'color-theme)
+	(color-theme-initialize)
+	;;(color-theme-greiner)
+	(color-theme-tango)))
+
 (when (eq machine 'giles)
   (require 'php-mode)
 
@@ -201,7 +209,6 @@
 	;;(color-theme-robin-hood)
 	(color-theme-greiner))
 
-
   (setq-default ispell-program-name "aspell")
   ;;(setq ispell-dictionary-alist
   ;;   '((nil
@@ -210,13 +217,6 @@
   ;;	  "/Library/Application Support/cocoAspell/aspell6-en-6.0-0")
   ;;	 nil iso-8859-1)))
   (setq ispell-extra-args '("-d" "/Library/Application Support/cocoAspell/aspell6-en-6.0-0/en.multi")))
-
-(when (or (eq machine 'mclovin) (eq machine 'giles))
-  (setq ange-ftp-local-host-regexp "\\.tcd\\.ie$\\|\\.[0-9]+\\.[0-9]+$\\|^[^.]*$")
-  (setq ange-ftp-gateway-host "ftp-proxy.cs.tcd.ie")
-  (setq ange-ftp-smart-gateway-port "24")
-  (setq ange-ftp-smart-gateway t))
-
 
 (defun c++-xref-hook ()
   (defvar xref-current-project nil) ;; can be also "my_project_name"
@@ -255,12 +255,6 @@
   ;;(add-hook 'find-file-hook 'flymake-find-file-hook)
 
 
-  (setq auto-mode-alist (cons '("\\.lua$" . lua-mode) auto-mode-alist))
-  (autoload 'lua-mode "lua-mode" "Lua editing mode." t)
-
-  (add-hook 'lua-mode-hook 'turn-on-font-lock)
-  ;;(add-hook 'lua-mode-hook 'hs-minor-mode)
-  ;;(require 'flymake-lua)
   (autoload 'flymake-lua-load "flymake-lua")
   (add-hook 'lua-mode-hook 'flymake-lua-load)
 
@@ -332,47 +326,7 @@
   (global-set-key [(f8)] 'wicked/toggle-w3m)
 
 
-  
-  ;; clojure-mode
-  ;;(add-to-list 'auto-mode-alist '("\\.clj$" . clojure-mode))
-  ;;(require 'clojure-mode)
-
-  ;; swank-clojure
-  ;;(add-to-list 'load-path "~/sw/swank-clojure/src/emacs")
-
-  ;; (setq swank-clojure-jar-path "/usr/share/java/clojure.jar"
-  ;; 		swank-clojure-extra-classpaths (list
-  ;; 										"~/sw/swank-clojure/src/main/clojure"))
-
-
-  ;; (require 'swank-clojure-autoload)
-
-  ;; ;; slime
-  ;; (eval-after-load "slime" 
-  ;; 	'(progn (slime-setup '(slime-repl))))
-
-  ;; ;; (add-to-list 'load-path "~/opt/slime")
-  ;; (require 'slime)
-  ;; (slime-setup)
-
-
   )
-
-
-(when (eq machine 'odysseus)
-  (require 'php-mode)
-
-  (setq auto-mode-alist (cons '("\\.lua$" . lua-mode) auto-mode-alist))
-  (autoload 'lua-mode "lua-mode" "Lua editing mode." t)
-  (add-hook 'lua-mode-hook 'turn-on-font-lock)
-  ;;(add-hook 'lua-mode-hook 'hs-minor-mode)
-
-  (when *is-cocoa-emacs*
-	(require 'color-theme)
-	(color-theme-initialize)
-	;;(color-theme-greiner)
-	(color-theme-tango)))
-
 
 
 
@@ -596,6 +550,47 @@
 
   )
 
+(define-key global-map (kbd "C-c SPC") 'ace-jump-mode)
+
+
+(yas-global-mode 1)
+
+;; Completing point by some yasnippet key
+(defun yas-ido-expand ()
+  "Lets you select (and expand) a yasnippet key"
+  (interactive)
+  (let ((original-point (point)))
+	(while (and
+			(not (= (point) (point-min) ))
+			(not
+			 (string-match "[[:space:]\n]" (char-to-string (char-before)))))
+	  (backward-word 1))
+    (let* ((init-word (point))
+           (word (buffer-substring init-word original-point))
+           (list (yas-active-keys)))
+      (goto-char original-point)
+      (let ((key (remove-if-not
+                  (lambda (s) (string-match (concat "^" word) s)) list)))
+        (if (= (length key) 1)
+            (setq key (pop key))
+          (setq key (ido-completing-read "key: " list nil nil word)))
+        (delete-char (- init-word original-point))
+        (insert key)
+        (yas-expand)))))
+(define-key yas-minor-mode-map (kbd "<C-tab>")     'yas-ido-expand)
+
+(require 'recentf)
+(defun recentf-ido-find-file ()
+  "Find a recent file using Ido."
+  (interactive)
+  (let ((file (ido-completing-read "Choose recent file: " recentf-list nil t)))
+    (when file
+      (find-file file))))
+
+
+(set-frame-parameter (selected-frame) 'alpha '(97 90))
+
+
 (when (string= (system-name) "JMCCANDLESS")
 
   (load-theme 'monokai)
@@ -691,6 +686,12 @@ compiler. If you would like to use a different compiler, see
 
 (when (eq machine 'mba)
 
+  ;; Set the starting position and width and height of Emacs Window
+  (add-to-list 'default-frame-alist '(left . 0))
+  (add-to-list 'default-frame-alist '(top . 0))
+  (add-to-list 'default-frame-alist '(height . 50))
+  (add-to-list 'default-frame-alist '(width . 120))
+
   (global-set-key "\C-cg" 'writegood-mode)
 
   (setq-default ispell-program-name "aspell")
@@ -746,18 +747,16 @@ compiler. If you would like to use a different compiler, see
   (add-to-list 'custom-theme-load-path "~/.emacs.d/themes")
   (add-to-list 'load-path "~/.emacs.d/themes")
 
-
   ;;(load-theme whiteboard)
   ;;(load-theme adwaita)
   (load-theme 'monokai)
-
   ;;(load-theme 'tomorrow-night-bright)
-
   ;;(load-theme 'sanityinc-tomorrow-bright)
 
   ;; (add-to-list 'load-path "~/.emacs.d/vendor/emacs-powerline")
   ;; (require 'powerline)
-  ;; (powerline-default-theme)
+
+  ; (powerline-default-theme)
 
   (setq sml/theme 'dark)
   (sml/setup)
@@ -777,7 +776,6 @@ compiler. If you would like to use a different compiler, see
 		weather-metno-location-longitude -73.921466)
 
 
-
   ;;(set-default-font "Consolas-13")
   ;;(set-default-font "Lucida Grande-13")
   (set-default-font "Source Code Pro-12")
@@ -785,54 +783,10 @@ compiler. If you would like to use a different compiler, see
   ;;(set-default-font "Menlo-14")
   ;;(set-frame-font "Menlo:pixelsize=18")
 
+  (add-hook 'clojure-mode-hook 'smartparens-mode)
+  (add-hook 'clojure-mode-hook 'rainbow-delimiters-mode)
+
   )
-
-
-(define-key global-map (kbd "C-c SPC") 'ace-jump-mode)
-
-
-;; clojure needs:
-;; smart parens
-;; rainbow--delimiters
-
-
-(yas-global-mode 1)
-
-;; Completing point by some yasnippet key
-(defun yas-ido-expand ()
-  "Lets you select (and expand) a yasnippet key"
-  (interactive)
-  (let ((original-point (point)))
-	(while (and
-			(not (= (point) (point-min) ))
-			(not
-			 (string-match "[[:space:]\n]" (char-to-string (char-before)))))
-	  (backward-word 1))
-    (let* ((init-word (point))
-           (word (buffer-substring init-word original-point))
-           (list (yas-active-keys)))
-      (goto-char original-point)
-      (let ((key (remove-if-not
-                  (lambda (s) (string-match (concat "^" word) s)) list)))
-        (if (= (length key) 1)
-            (setq key (pop key))
-          (setq key (ido-completing-read "key: " list nil nil word)))
-        (delete-char (- init-word original-point))
-        (insert key)
-        (yas-expand)))))
-(define-key yas-minor-mode-map (kbd "<C-tab>")     'yas-ido-expand)
-
-(require 'recentf)
-(defun recentf-ido-find-file ()
-  "Find a recent file using Ido."
-  (interactive)
-  (let ((file (ido-completing-read "Choose recent file: " recentf-list nil t)))
-    (when file
-      (find-file file))))
-
-
-(set-frame-parameter (selected-frame) 'alpha '(97 90))
-
 
 
 (when (string= (system-name) "zocubuntu")
