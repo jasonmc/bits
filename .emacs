@@ -524,10 +524,6 @@
 ;;; (mac-add-path-to-exec-path)
 
 
-
-
-
-
 (global-set-key [(meta x)] (lambda ()
                              (interactive)
                              (or (boundp 'smex-cache)
@@ -541,8 +537,6 @@
                                        (smex-initialize))
                                    (global-set-key [(shift meta x)] 'smex-major-mode-commands)
                                    (smex-major-mode-commands)))
-
-
 
 (when (string= (system-name) "JMCCANDLESS")
   (require 'package)
@@ -646,3 +640,14 @@ compiler. If you would like to use a different compiler, see
   (require 'org-jira)
 
   )
+
+(when (string= (system-name) "zocubuntu")
+  (require 'package)
+  (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
+						   ("marmalade" . "http://marmalade-repo.org/packages/")
+						   ("melpa" . "http://melpa.milkbox.net/packages/")
+						   ("org" . "http://orgmode.org/elpa/")))
+  (package-initialize)
+  ;;(load-theme 'wombat t)
+  ;;(load-theme 'monokai t)
+)
