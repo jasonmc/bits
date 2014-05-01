@@ -310,13 +310,13 @@
 	  
 	  ;(require 'gist)
 
-      (defun djcb-opacity-modify (&amp;optional dec)
+      (defun djcb-opacity-modify (&optional dec)
 	"modify the transparency of the emacs frame; if DEC is t,
     decrease the transparency, otherwise increase it in 10%-steps"
 	(let* ((alpha-or-nil (frame-parameter nil 'alpha)) ; nil before setting
 	       (oldalpha (if alpha-or-nil alpha-or-nil 100))
 	       (newalpha (if dec (- oldalpha 10) (+ oldalpha 10))))
-	  (when (and (&gt;= newalpha frame-alpha-lower-limit) (&lt;= newalpha 100))
+	  (when (and (>= newalpha frame-alpha-lower-limit) (<= newalpha 100))
 	    (modify-frame-parameters nil (list (cons 'alpha newalpha))))))
 
       ;; C-8 will increase opacity (== decrease transparency)
@@ -767,6 +767,12 @@ compiler. If you would like to use a different compiler, see
 ;;(set-default-font "Menlo-14")
 ;(set-frame-font "Menlo:pixelsize=18")
 
+(setq-default ispell-program-name "aspell")
+(setq ispell-extra-args '("-d" "/usr/local/homebrew/lib/aspell-0.60/en.multi"))
+
+;(add-hook 'org-mode-hook (lambda ()  (flyspell-mode t)))
+(add-hook 'org-mode-hook 'flyspell-mode)
+(add-hook 'org-mode-hook 'flyspell-buffer)
 
   )
 
