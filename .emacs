@@ -25,6 +25,9 @@
 (when (eq window-system 'w32)
   (menu-bar-mode -1))
 
+(defun open-init-file ()
+  (interactive)
+  (find-file user-init-file))
 
 (global-font-lock-mode 1)
 
@@ -593,7 +596,18 @@
 
 (when (string= (system-name) "JMCCANDLESS")
 
+  (add-to-list 'default-frame-alist '(left . 0))
+  (add-to-list 'default-frame-alist '(top . 0))
+  (add-to-list 'default-frame-alist '(height . 50))
+  (add-to-list 'default-frame-alist '(width . 120))
+
   (load-theme 'monokai)
+
+  (set-default-font "Consolas-11:antialias=subpixel")
+  ;;(set-default-font "Source Code Pro-10:antialias=subpixel")
+
+  ;; (apply 'ensure-package-installed '(ace-jump-mode confluence csharp-mode csv-mode flycheck f fsharp-mode auto-complete helm-spotify helm js2-mode json-mode json-reformat jsshell magit git-rebase-mode git-commit-mode markdown-mode monokai-theme multi mustache ht mustache-mode org-jira paredit popup pos-tip pretty-mode projectile pkg-info epl rainbow-delimiters s smex solarized-theme dash xkcd xml-rpc yasnippet))
+
 
   (add-to-list 'exec-path "C:/Program Files (x86)/Git/bin")
 
@@ -610,10 +624,6 @@
 		   "~/journal.org"
 		   'top)))
   (global-set-key (kbd "C-c j") 'org-remember)
-
-
-  (set-default-font "Consolas-11:antialias=subpixel")
-  ;;(set-default-font "Source Code Pro-10:antialias=subpixel")
 
 
   (setq projectile-indexing-method 'native)
@@ -687,10 +697,10 @@ compiler. If you would like to use a different compiler, see
 (when (eq machine 'mba)
 
   ;; Set the starting position and width and height of Emacs Window
-  (add-to-list 'default-frame-alist '(left . 0))
-  (add-to-list 'default-frame-alist '(top . 0))
+  ;; (add-to-list 'default-frame-alist '(left . 20))
+  ;; (add-to-list 'default-frame-alist '(top . 0))
   (add-to-list 'default-frame-alist '(height . 50))
-  (add-to-list 'default-frame-alist '(width . 120))
+  (add-to-list 'default-frame-alist '(width . 140))
 
   (global-set-key "\C-cg" 'writegood-mode)
 
@@ -793,3 +803,4 @@ compiler. If you would like to use a different compiler, see
   ;;(load-theme 'wombat t)
   ;;(load-theme 'monokai t)
   )
+
