@@ -1,15 +1,7 @@
 
 (add-to-list 'load-path "~/.emacs.d/")
 
-(defun set-load-path ()
-    (set 'load-path (cons (expand-file-name "~/lisp") load-path))
-    ;; add others here
-    (message "Load path set."))
 
-(set-load-path)
-(global-font-lock-mode 1)
-
-(add-to-list 'exec-path "/usr/local/bin")
 
 (setq *is-a-mac* (eq system-type 'darwin))
 (setq *is-cocoa-emacs* (and *is-a-mac* (eq window-system 'ns)))
@@ -27,12 +19,19 @@
 		(setq machine 'turing)
 		(setq machine 'other)))))
 
-
 (when (or (or (eq window-system 'ns) (eq window-system 'x) (eq window-system 'w32)))
       (mouse-wheel-mode t)
       (scroll-bar-mode -1)
       (blink-cursor-mode 0)
       (tool-bar-mode 0))
+
+(when (eq window-system 'w32)
+  (menu-bar-mode -1))
+
+
+(global-font-lock-mode 1)
+
+(add-to-list 'exec-path "/usr/local/bin")
 
 ;; truncate lines if they are too long
 
@@ -126,6 +125,10 @@
 (defalias 'qrr 'query-replace-regexp)
 
 
+(show-paren-mode t)
+;;(setq show-paren-style 'expression)
+(setq show-paren-style 'parenthesis)
+
 
 ;; Starts the Emacs server
 ;;(server-start)
@@ -159,10 +162,11 @@
 	  (add-to-list 'exec-path "/usr/local/homebrew/bin")
 	  (add-to-list 'exec-path (expand-file-name "~/bin"))
       (setenv "PATH" (concat (getenv "PATH") (concat ":" (expand-file-name "~/bin:/usr/local/bin:/usr/texbin"))))
-      (setq shell-file-name "/bin/zsh"))
+	  (setenv "PATH" (concat (getenv "PATH") ":/usr/local/homebrew/bin"))
+      (setq shell-file-name "zsh"))
 
-(show-paren-mode t)
-(setq show-paren-style 'expression)
+
+
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -209,12 +213,12 @@
 
 
 	   (setq-default ispell-program-name "aspell")
-	;(setq ispell-dictionary-alist
-	;   '((nil
-	;	 "[A-Za-z]" "[^A-Za-z]" "[']" nil
-	;	 ("-B" "-d" "english" "--dict-dir"
-	;	  "/Library/Application Support/cocoAspell/aspell6-en-6.0-0")
-	;	 nil iso-8859-1)))
+	   ;;(setq ispell-dictionary-alist
+	   ;;   '((nil
+	   ;;	 "[A-Za-z]" "[^A-Za-z]" "[']" nil
+	   ;;	 ("-B" "-d" "english" "--dict-dir"
+	   ;;	  "/Library/Application Support/cocoAspell/aspell6-en-6.0-0")
+	   ;;	 nil iso-8859-1)))
 	   (setq ispell-extra-args '("-d" "/Library/Application Support/cocoAspell/aspell6-en-6.0-0/en.multi")))
 
 (when (or (eq machine 'mclovin) (eq machine 'giles))
@@ -362,7 +366,7 @@
 	  ;; (slime-setup)
 
 
-))))
+)
 
 
 (when (eq machine 'odysseus)
@@ -524,30 +528,83 @@
 ;;; (mac-add-path-to-exec-path)
 
 
-;; (global-set-key [(meta x)] (lambda ()
-;;                              (interactive)
-;;                              (or (boundp 'smex-cache)
-;;                                  (smex-initialize))
-;;                              (global-set-key [(meta x)] 'smex)
-;;                              (smex)))
 
-;; (global-set-key [(shift meta x)] (lambda ()
-;;                                    (interactive)
-;;                                    (or (boundp 'smex-cache)
-;;                                        (smex-initialize))
-;;                                    (global-set-key [(shift meta x)] 'smex-major-mode-commands)
-;;                                    (smex-major-mode-commands)))
+
+
+(defun oldPackageEnsure (&rest packages)
+  (defvar jason-packages packages
+	"A list of packages to ensure are installed at launch.")
+  (defun emacs-packages-installed-p ()
+	(loop for p in jason-packages
+		  when (not (package-installed-p p)) do (return nil)
+		  finally (return t)))
+
+  (unless (emacs-packages-installed-p)
+	;; check for new packages (package versions)
+	(message "%s" "Emacs is now refreshing its package database...")
+	(package-refresh-contents)
+	(message "%s" " done.")
+	;; install the missing packages
+	(dolist (p jason-packages)
+	  (when (not (package-installed-p p))
+		(package-install p))))
+
+  (provide 'jason-packages)
+)
+
+(defun ensure-package-installed (&rest packages)
+  "Assure every package is installed, ask for installation if it’s not.
+   Return a list of installed packages or nil for every skipped package."
+  (mapcar
+   (lambda (package)
+     ;; (package-installed-p 'evil)
+     (if (package-installed-p package)
+         nil
+       (if (y-or-n-p (format "Package %s is missing. Install it? " package))
+           (package-install package)
+         package)))
+   packages))
 
 
 (when (>= emacs-major-version 24)
   (require 'package)
-  (package-initialize)
   ;; (add-to-list 'package-archives
   ;; 			   '("marmalade" . "http://marmalade-repo.org/packages/") t)
   (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
 						   ("marmalade" . "http://marmalade-repo.org/packages/")
 						   ("melpa" . "http://melpa.milkbox.net/packages/")
-						   ("org" . "http://orgmode.org/elpa/"))))
+						   ("org" . "http://orgmode.org/elpa/")))
+  (or (file-exists-p package-user-dir)
+	 (package-refresh-contents))
+
+  (package-initialize)
+
+  ;; '(ack-and-a-half auctex clojure-mode coffee-mode deft expand-region
+  ;; 				 gist groovy-mode haml-mode haskell-mode inf-ruby
+  ;; 				 magit magithub markdown-mode paredit projectile python
+  ;; 				 sass-mode rainbow-mode scss-mode solarized-theme
+  ;; 				 volatile-highlights yaml-mode yari zenburn-theme)
+
+  ;;(4clojure ac-ispell ac-nrepl ace-jump-mode ack-and-a-half auctex autopair clojure-cheatsheet cider clojure-snippets clojurescript-mode color-theme-sanityinc-tomorrow color-theme-tango color-theme csharp-mode cyberpunk-theme ein elein flycheck f flymake-tuareg gist gh gnugo go-autocomplete auto-complete go-mode go-snippets google-maps graphviz-dot-mode guru-mode hackernews haskell-mode helm-ack helm-google google helm-spotify helm ibuffer-git ido-ubiquitous ipython js2-mode logito magit git-rebase-mode git-commit-mode markdown-mode monokai-theme multi nrepl clojure-mode nyan-prompt org-jekyll org-plus-contrib ox-reveal org pcache popup powerline pretty-lambdada pretty-mode projectile pkg-info epl protobuf-mode rainbow-blocks rainbow-delimiters request rust-mode s sentence-highlight smart-mode-line smartparens smex solarized-theme dash spotify ssh-config-mode tuareg caml w3m weather weather-metno websocket writegood-mode xkcd yasnippet zenburn-theme)
+
+  (ensure-package-installed 'xkcd 'smex)
+
+
+  (global-set-key [(meta x)] (lambda ()
+							   (interactive)
+							   (or (boundp 'smex-cache)
+								  (smex-initialize))
+							   (global-set-key [(meta x)] 'smex)
+							   (smex)))
+
+  (global-set-key [(shift meta x)] (lambda ()
+									 (interactive)
+									 (or (boundp 'smex-cache)
+										(smex-initialize))
+									 (global-set-key [(shift meta x)] 'smex-major-mode-commands)
+									 (smex-major-mode-commands)))
+
+)
 
 (when (string= (system-name) "JMCCANDLESS")
 
@@ -580,8 +637,6 @@
   (set-default-font "Consolas-11:antialias=subpixel")
   ;(set-default-font "Source Code Pro-10:antialias=subpixel")
 
-
-  (menu-bar-mode -1)
 
   (setq projectile-indexing-method 'native)
   (projectile-global-mode)
@@ -654,33 +709,30 @@ compiler. If you would like to use a different compiler, see
        (read-string "Google: "))))))
 
 
-
-
 (when (or (string-match "cswireless-16" (system-name)) (string-match "Jasons-MacBook-Air" (system-name)))
 
-  ;; (require 'writegood-mode)
   (global-set-key "\C-cg" 'writegood-mode)
 
-
-  ;;(add-to-list 'exec-path "/Users/jason/local/godi/bin")
-  ;;(add-to-list 'exec-path "/Users/jason/local/godi/sbin")
-
-  (setenv "PATH" (concat (getenv "PATH") ":/usr/local/homebrew/bin"))
-
-
-  ;;(setq ispell-extra-args '("-d" "/Library/Application Support/cocoAspell/aspell6-en-6.0-0/en.multi"))
   (setq-default ispell-program-name "aspell")
   ;;(setq ispell-extra-args '("-d" "/usr/local/homebrew/bin/aspell"))
-  (setq ispell-extra-args '("--sug-mode=ultra"))
+  ;;(setq ispell-extra-args '("-d" "/Library/Application Support/cocoAspell/aspell6-en-6.0-0/en.multi"))
+  (setq ispell-extra-args '("-d" "/usr/local/homebrew/lib/aspell-0.60/en.multi"))
+  ;;(setq ispell-extra-args '("--sug-mode=ultra"))
+
+
+  (add-hook 'org-mode-hook 'flyspell-mode)
+  (add-hook 'org-mode-hook 'flyspell-buffer)
+
 
   (add-hook 'LaTeX-mode-hook 'flyspell-mode)
-										;(add-hook 'LaTeX-mode-hook 'flyspell-buffer)
+  (add-hook 'LaTeX-mode-hook 'flyspell-buffer)
+
   (add-hook 'LaTeX-mode-hook 'reftex-mode)
   (add-hook 'LaTeX-mode-hook 
 			(lambda ()
 			  (set-fill-column 100)
 			  (longlines-mode)
-										;(color-theme-aalto-light)
+			  ;;(color-theme-aalto-light)
 			  (setq reftex-plug-into-AUCTeX t)
 			  (setq reftex-default-bibliography '("/Users/jason/Desktop/thesis/thesis.bib"))
 			  (variable-pitch-mode t)
@@ -709,10 +761,10 @@ compiler. If you would like to use a different compiler, see
    ;; '(hl-sentence-face ((t (:foreground "white"))) t)
    ;; '(variable-pitch ((t (:foreground "gray80" :height 170 :family "Cochin")))))
 
-										;'(variable-pitch ((t (:height 170 :family "Times"))))
-										;'(variable-pitch ((t (:height 170 :family "Lucida Grande"))))
-										;'(variable-pitch ((t (:family "Lucida Grande"))))
-										;'(variable-pitch ((t (:size 24 :family "Georgia"))))
+   ;;'(variable-pitch ((t (:height 170 :family "Times"))))
+   ;;'(variable-pitch ((t (:height 170 :family "Lucida Grande"))))
+   ;;'(variable-pitch ((t (:family "Lucida Grande"))))
+   ;;'(variable-pitch ((t (:size 24 :family "Georgia"))))
 
    '(variable-pitch ((t (:height 160 :family "Georgia"))))
    )
@@ -721,73 +773,56 @@ compiler. If you would like to use a different compiler, see
   (add-to-list 'load-path "~/.emacs.d/themes")
 
 
-										;(load-theme whiteboard)
-										;(load-theme adwaita)
+  ;;(load-theme whiteboard)
+  ;;(load-theme adwaita)
   (load-theme 'monokai)
 
-										;(load-theme 'tomorrow-night-bright)
+  ;;(load-theme 'tomorrow-night-bright)
 
-										;(load-theme 'sanityinc-tomorrow-bright)
+  ;;(load-theme 'sanityinc-tomorrow-bright)
 
-										;(add-to-list 'load-path "~/.emacs.d/vendor/emacs-powerline")
-  (require 'powerline)
-  (powerline-default-theme)
+  ;; (add-to-list 'load-path "~/.emacs.d/vendor/emacs-powerline")
+  ;; (require 'powerline)
+  ;; (powerline-default-theme)
+
+  (setq sml/theme 'dark)
+  (sml/setup)
 
 
   (add-to-list 'load-path "~/.emacs.d/org-impress-js.el")
   (require 'org-impress-js)
-										;C-u <TAB>
+  ;;C-u <TAB>
 
 
   (require 'helm-config)
-										;(global-set-key (kbd "C-c h") 'helm-mini)
-										;(helm-mode 1)
+  ;;(global-set-key (kbd "C-c h") 'helm-mini)
+  ;;(helm-mode 1)
 
   (setq weather-metno-location-name "Brooklyn, USA"
 		weather-metno-location-latitude 40.708441
 		weather-metno-location-longitude -73.921466)
-
-
-
-  (defun esk-pretty-fn ()
-	(font-lock-add-keywords nil `(("(\\(\\<fn\\>\\)"
-								   (0 (progn (compose-region (match-beginning 1)
-															 (match-end 1)
-															 "\u0192"
-															 'decompose-region)))))))
-  ;;(add-hook 'clojure-mode-hook 'esk-pretty-fn)
-
 
   (require 'pretty-mode)
   (global-pretty-mode 1)
   (add-hook 'clojure-mode-hook 'turn-on-pretty-mode)
 
   (set-default-font "Source Code Pro-12")
-;(set-default-font "Inconsolata-15")
-;;(set-default-font "Menlo-14")
-;(set-frame-font "Menlo:pixelsize=18")
-
-(setq-default ispell-program-name "aspell")
-(setq ispell-extra-args '("-d" "/usr/local/homebrew/lib/aspell-0.60/en.multi"))
-
-;(add-hook 'org-mode-hook (lambda ()  (flyspell-mode t)))
-(add-hook 'org-mode-hook 'flyspell-mode)
-(add-hook 'org-mode-hook 'flyspell-buffer)
+  ;;(set-default-font "Inconsolata-15")
+  ;;(set-default-font "Menlo-14")
+  ;;(set-frame-font "Menlo:pixelsize=18")
 
   )
-
 
 
 (require 'ace-jump-mode)
 (define-key global-map (kbd "C-c SPC") 'ace-jump-mode)
 
 
+;clojure needs:
 ;smart parens
 ;rainbow--delimiters
-;nrepl
-;flycheck
-;mrev?
-;helm
+
+
 
 (require 'yasnippet)
 (yas-global-mode 1)
