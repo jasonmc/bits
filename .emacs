@@ -27,7 +27,7 @@
 		(setq machine 'other)))))
 
 
-(when (or (eq window-system 'ns) (eq window-system 'x))
+(when (or (or (eq window-system 'ns) (eq window-system 'x) (eq window-system 'w32)))
       (mouse-wheel-mode t)
       (scroll-bar-mode -1)
       (blink-cursor-mode 0)
@@ -40,11 +40,14 @@
 
 ;; inhibit startup message
 (setq inhibit-startup-message t)
+(setq initial-scratch-message "")
 
 ;; get intermittent messages to stop typing
 ;;(type-break-mode)
 
-(iswitchb-mode 1)
+(setq ido-enable-flex-matching t)
+(setq ido-everywhere t)
+(ido-mode 1) 
 
 (setq default-tab-width 4)
 
@@ -130,7 +133,7 @@
 (add-hook 'c-mode-common-hook
                (lambda ()
                 (font-lock-add-keywords nil
-                 '(("\\<\\(FIXME\\|TODO\\|BUG\\):" 1 font-lock-warning-face t)))))
+                 '(("\\&lt;\\(FIXME\\|TODO\\|BUG\\):" 1 font-lock-warning-face t)))))
 
 
 ;(if window-system 
@@ -139,12 +142,12 @@
 ;; Auto-raise Emacs on activation
 ;;; (if window-system
 ;;;     ((defun raise-emacs-app() 
-;;;        (shell-command "osascript -e 'tell application \"Emacs\" to activate' &"))
+;;;        (shell-command "osascript -e 'tell application \"Emacs\" to activate' &amp;"))
 ;;;      (add-hook 'server-switch-hook 'raise-emacs-on-app)))
 
 ;; Auto-raise Emacs on activation
 (defun raise-emacs-on-aqua() 
-    (shell-command "osascript -e 'tell application \"Emacs\" to activate' &"))
+    (shell-command "osascript -e 'tell application \"Emacs\" to activate' &amp;"))
 
 (when *is-a-mac*
 	  ;; Make mouse wheel / trackpad scrolling less jerky
@@ -160,16 +163,18 @@
 (setq show-paren-style 'expression)
 
 (custom-set-variables
-  ;; custom-set-variables was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(custom-safe-themes (quote ("d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" "e16a771a13a202ee6e276d06098bc77f008b73bbac4d526f160faa2d76c1dd0e" "60f04e478dedc16397353fb9f33f0d895ea3dab4f581307fbf0aa2f07e658a40" "73fe242ddbaf2b985689e6ec12e29fab2ecd59f765453ad0e93bc502e6e478d6" "99cbc2aaa2b77374c2c06091494bd9d2ebfe6dc5f64c7ccdb36c083aff892f7d" "d2622a2a2966905a5237b54f35996ca6fda2f79a9253d44793cfe31079e3c92b" "501caa208affa1145ccbb4b74b6cd66c3091e41c5bb66c677feda9def5eab19c" "72cc9ae08503b8e977801c6d6ec17043b55313cda34bcf0e6921f2f04cf2da56" "71efabb175ea1cf5c9768f10dad62bb2606f41d110152f4ace675325d28df8bd" default)))
  '(display-time-mode t)
  '(ecb-options-version "2.32")
- '(flymake-allowed-file-name-masks (quote (("\\.c\\'" flymake-simple-make-init) ("\\.cpp\\'" flymake-simple-make-init) ("\\.cc\\'" flymake-simple-make-init) ("\\.xml\\'" flymake-xml-init) ("\\.html?\\'" flymake-xml-init) ("\\.cs\\'" flymake-simple-make-init) ("\\.p[ml]\\'" flymake-perl-init) ("\\.php[345]?\\'" flymake-php-init) ("\\.h\\'" flymake-master-make-header-init flymake-master-cleanup) ("\\.java\\'" flymake-simple-make-java-init flymake-simple-java-cleanup) ("[0-9]+\\.tex\\'" flymake-master-tex-init flymake-master-cleanup) ("\\.tex\\'" flymake-simple-tex-init) ("\\.idl\\'" flymake-simple-make-init))))
+ '(flymake-allowed-file-name-masks (quote (("\\.c\\'" flymake-simple-make-init) ("\\.cpp\\'" flymake-simple-make-init) ("\\.cc\\'" flymake-simple-make-init) ("\\.xml\\'" flymake-xml-init) ("\\.html?\\'" flymake-xml-init) ("\\.p[ml]\\'" flymake-perl-init) ("\\.php[345]?\\'" flymake-php-init) ("\\.h\\'" flymake-master-make-header-init flymake-master-cleanup) ("\\.java\\'" flymake-simple-make-java-init flymake-simple-java-cleanup) ("[0-9]+\\.tex\\'" flymake-master-tex-init flymake-master-cleanup) ("\\.tex\\'" flymake-simple-tex-init) ("\\.idl\\'" flymake-simple-make-init))))
  '(paren-match-face (quote paren-face-match-light))
  '(paren-sexp-mode t)
- '(show-paren-mode t))
+ '(show-paren-mode t)
+)
 
 ;;(push '("\\.cc$" flymake-cc-init) flymake-allowed-file-name-masks)
 
@@ -180,12 +185,12 @@
 
 
 (custom-set-faces
-  ;; custom-set-faces was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
- '(diff-added ((t (:foreground "Dark Green"))) t)
- '(diff-removed ((t (:foreground "Red"))) t))
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(diff-added ((((class color) (min-colors 89)) (:foreground "#859900" :background nil))))
+ '(diff-removed ((((class color) (min-colors 89)) (:foreground "#dc322f" :background nil)))))
 
 (when (eq machine 'giles)
       (require 'php-mode)
@@ -300,13 +305,13 @@
 	  
 	  ;(require 'gist)
 
-      (defun djcb-opacity-modify (&optional dec)
+      (defun djcb-opacity-modify (&amp;optional dec)
 	"modify the transparency of the emacs frame; if DEC is t,
     decrease the transparency, otherwise increase it in 10%-steps"
 	(let* ((alpha-or-nil (frame-parameter nil 'alpha)) ; nil before setting
 	       (oldalpha (if alpha-or-nil alpha-or-nil 100))
 	       (newalpha (if dec (- oldalpha 10) (+ oldalpha 10))))
-	  (when (and (>= newalpha frame-alpha-lower-limit) (<= newalpha 100))
+	  (when (and (&gt;= newalpha frame-alpha-lower-limit) (&lt;= newalpha 100))
 	    (modify-frame-parameters nil (list (cons 'alpha newalpha))))))
 
       ;; C-8 will increase opacity (== decrease transparency)
@@ -357,7 +362,7 @@
 	  ;; (slime-setup)
 
 
-)
+))))
 
 
 (when (eq machine 'odysseus)
@@ -468,7 +473,7 @@
 ;;;       ;; execute 'printenv' with the default login shell,
 ;;;       ;; running the shell with -l (to load the environment)
 ;;;       (setq default-directory "~/")     ; ensure it can be executed
-;;;       ;; To Do: use call-process instead -> this here
+;;;       ;; To Do: use call-process instead -&gt; this here
 ;;;       ;; will invoke two bashes
 
 ;;;       (let ((shell-login-switch
@@ -520,3 +525,124 @@
 
 
 
+
+
+
+(global-set-key [(meta x)] (lambda ()
+                             (interactive)
+                             (or (boundp 'smex-cache)
+                                 (smex-initialize))
+                             (global-set-key [(meta x)] 'smex)
+                             (smex)))
+
+(global-set-key [(shift meta x)] (lambda ()
+                                   (interactive)
+                                   (or (boundp 'smex-cache)
+                                       (smex-initialize))
+                                   (global-set-key [(shift meta x)] 'smex-major-mode-commands)
+                                   (smex-major-mode-commands)))
+
+
+
+(when (string= (system-name) "JMCCANDLESS")
+  (require 'package)
+  ;; (add-to-list 'package-archives
+  ;; 			   '("marmalade" . "http://marmalade-repo.org/packages/") t)
+  (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
+						   ("marmalade" . "http://marmalade-repo.org/packages/")
+						   ("melpa" . "http://melpa.milkbox.net/packages/")
+						   ("org" . "http://orgmode.org/elpa/")))
+  (package-initialize)
+
+  (require 'pretty-mode)
+   ; if you want to set it globally
+  (global-pretty-mode t)
+   ; if you want to set it only for a specific mode
+   ;;(add-hook 'my-pretty-language-hook 'turn-on-pretty-mode)
+
+  (load-theme 'monokai)
+
+  (add-to-list 'exec-path "C:/Program Files (x86)/Git/bin")
+
+  (setenv "PATH" (concat (getenv "PATH") ";C:\\Program Files (x86)\\Git\\bin"))
+
+
+  (require 'mustache-mode)
+
+  ;; (require 'remember)
+  ;;   (org-remember-insinuate)
+  (setq org-remember-templates
+		'(("Journal"
+		   ?j
+		   "* %U %? %^g\n\n   %x"
+		   "~/journal.org"
+		   'top)))
+  (global-set-key (kbd "C-c j") 'org-remember)
+
+
+  (set-default-font "Consolas-11:antialias=subpixel")
+
+										;(set-default-font "Source Code Pro-10:antialias=subpixel")
+
+
+  (menu-bar-mode -1)
+
+  (setq projectile-indexing-method 'native)
+  (projectile-global-mode)
+
+  (require 'yasnippet)
+
+  (defun csharp-set-flycheck-command ()
+	"Set the flycheck command, dynamically, as a side effect.
+ 
+This function is intended for use as a before-syntax-check-hook with
+flycheck.  Use it like this:
+ 
+    (add-hook 'flycheck-before-syntax-check-hook  #'csharp-set-flycheck-command)
+ 
+Then, in your csharp file, specify this in the comments at the header.
+ 
+    // flycheck: gmcs -t:module /debug+ -pkg:dotnet %f
+ 
+This will cause flycheck to run the given command, replacing the %f with
+the source file name."
+	(and (eq major-mode 'csharp-mode)
+	   (let ((cmd-string
+			  (csharp-get-value-from-comments "flycheck" csharp-cmd-line-limit)))
+		 (and cmd-string
+			(not (eq cmd-string ""))
+			(let* ((cmd (split-string cmd-string " "))
+				   (ferf (member "%f" cmd)))
+			  (and ferf (setcar ferf 'source))
+			  (put 'csharp :flycheck-command cmd))))))
+  (eval-after-load "flycheck"
+	'(progn
+	   (flycheck-define-checker csharp
+								"A C# syntax checker for dotnet. By default, it uses the Mono
+compiler. If you would like to use a different compiler, see
+`csharp-set-flycheck-command'."
+								:command ("gmcs" "-target:module" source)
+								:error-patterns
+								;; WinFormsHello.cs(17,9): error CS0246: The type or namespace name `derp' could not be found. Are you missing an assembly reference?
+								((error line-start (file-name) "(" line "," column "): error " (message) line-end)
+								 (warning line-start (file-name) "(" line "," column "): warning " (message) line-end))
+								:modes csharp-mode)
+	   (add-hook 'flycheck-before-syntax-check-hook  #'csharp-set-flycheck-command)))
+
+  (require 'confluence)
+  (setq confluence-url "https://zocdoc.atlassian.net/wiki/rpc/xmlrpc")
+
+
+  (add-to-list 'load-path "~/org-impress-js.el")
+  (require 'org-impress-js)
+
+  (add-to-list 'load-path "~/.emacs.d/emacs-powerline")
+  (require 'powerline)
+
+
+  (setq jiralib-url "https://zocdoc.atlassian.net")
+
+  (add-to-list 'load-path "~/.emacs.d/org-jira")
+  (require 'org-jira)
+
+  )
