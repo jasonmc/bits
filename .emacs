@@ -804,3 +804,6 @@ compiler. If you would like to use a different compiler, see
   ;;(load-theme 'monokai t)
   )
 
+(when (string= (system-name) "apollo.jasonmc.net")
+  ;;(load-theme 'wombat t)
+  (load-theme 'monokai t))
