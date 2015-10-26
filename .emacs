@@ -1,5 +1,3 @@
-;; (add-to-list 'load-path "~/.emacs.d/")
-
 (setq *is-a-mac* (eq system-type 'darwin))
 (setq *is-cocoa-emacs* (and *is-a-mac* (eq window-system 'ns)))
 
@@ -12,7 +10,7 @@
  ((string-match "odysseus" (system-name)) (setq machine 'odysseus))
  ((string-match "giles" (system-name)) (setq machine 'giles))
  ((string-match "mclovin" (system-name)) (setq machine 'mclovin))
- ((string-match "turing.scss.tcd.ie" (system-name))	(setq machine 'turing))
+ ((string-match "e73dd8c40824ff66d747331937bbec772687961b" (sha1 (system-name)))	(setq machine 'werklt))
  (t	(setq machine 'other)))
 
 
@@ -213,13 +211,6 @@
  '(diff-removed ((((class color) (min-colors 89)) (:foreground "#dc322f" :background nil))))
  '(variable-pitch ((t (:height 160 :family "Georgia")))))
 
-
-(when (eq machine 'odysseus)
-  (when *is-cocoa-emacs*
-	(require 'color-theme)
-	(color-theme-initialize)
-	;;(color-theme-greiner)
-	(color-theme-tango)))
 
 (when (eq machine 'giles)
   (require 'php-mode)
@@ -491,29 +482,6 @@
 
 
 
-
-
-(defun oldPackageEnsure (&rest packages)
-  (defvar jason-packages packages
-	"A list of packages to ensure are installed at launch.")
-  (defun emacs-packages-installed-p ()
-	(loop for p in jason-packages
-		  when (not (package-installed-p p)) do (return nil)
-		  finally (return t)))
-
-  (unless (emacs-packages-installed-p)
-	;; check for new packages (package versions)
-	(message "%s" "Emacs is now refreshing its package database...")
-	(package-refresh-contents)
-	(message "%s" " done.")
-	;; install the missing packages
-	(dolist (p jason-packages)
-	  (when (not (package-installed-p p))
-		(package-install p))))
-
-  (provide 'jason-packages)
-  )
-
 (defun ensure-package-installed (&rest packages)
   "Assure every package is installed, ask for installation if it’s not.
    Return a list of installed packages or nil for every skipped package."
@@ -533,10 +501,9 @@
   ;; (add-to-list 'package-archives
   ;; 			   '("marmalade" . "http://marmalade-repo.org/packages/") t)
   (setq package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
-						   ("marmalade" . "http://marmalade-repo.org/packages/")
-						   ;; ("melpa" . "https://melpa.milkbox.net/packages/")
+						   ("marmalade" . "https://marmalade-repo.org/packages/")
 						   ("melpa" . "https://melpa.org/packages/")
-						   ("org" . "https://orgmode.org/elpa/")))
+						   ("org" . "http://orgmode.org/elpa/")))
   (or (file-exists-p package-user-dir)
 	 (package-refresh-contents))
 
@@ -708,7 +675,7 @@ compiler. If you would like to use a different compiler, see
   (interactive)
   (browse-url
    (concat
-    "http://www.google.com/search?ie=utf-8&oe=utf-8&q="
+    "https://www.google.com/search?ie=utf-8&oe=utf-8&q="
     (url-hexify-string (if mark-active
 						   (buffer-substring (region-beginning) (region-end))
 						 (read-string "Google: "))))))
@@ -819,11 +786,21 @@ compiler. If you would like to use a different compiler, see
   )
 
 
-(when (string= (system-name) "zocubuntu")
-  ;;(load-theme 'wombat t)
-  ;;(load-theme 'monokai t)
-  )
-
 (when (string= (system-name) "apollo.jasonmc.net")
-  ;;(load-theme 'wombat t)
   (load-theme 'monokai t))
+
+
+(when (eq machine 'werklt)
+  (ensure-package-installed 'smex 'smart-mode-line 'powerline)
+  
+  (load-theme 'wombat t)
+  (setq sml/theme 'dark)
+  (sml/setup)
+  (when (display-graphic-p)
+	(set-default-font "Source Code Pro-12")
+	(powerline-default-theme)
+	(add-to-list 'default-frame-alist '(left . 0))
+	(add-to-list 'default-frame-alist '(top . 0))
+	(add-to-list 'default-frame-alist '(height . 70))
+	(add-to-list 'default-frame-alist '(width . 100)))
+  )
