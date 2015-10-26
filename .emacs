@@ -212,13 +212,6 @@
  '(variable-pitch ((t (:height 160 :family "Georgia")))))
 
 
-(when (eq machine 'odysseus)
-  (when *is-cocoa-emacs*
-	(require 'color-theme)
-	(color-theme-initialize)
-	;;(color-theme-greiner)
-	(color-theme-tango)))
-
 (when (eq machine 'giles)
   (require 'php-mode)
 
@@ -488,29 +481,6 @@
 ;;; (mac-add-path-to-exec-path)
 
 
-
-
-
-(defun oldPackageEnsure (&rest packages)
-  (defvar jason-packages packages
-	"A list of packages to ensure are installed at launch.")
-  (defun emacs-packages-installed-p ()
-	(loop for p in jason-packages
-		  when (not (package-installed-p p)) do (return nil)
-		  finally (return t)))
-
-  (unless (emacs-packages-installed-p)
-	;; check for new packages (package versions)
-	(message "%s" "Emacs is now refreshing its package database...")
-	(package-refresh-contents)
-	(message "%s" " done.")
-	;; install the missing packages
-	(dolist (p jason-packages)
-	  (when (not (package-installed-p p))
-		(package-install p))))
-
-  (provide 'jason-packages)
-  )
 
 (defun ensure-package-installed (&rest packages)
   "Assure every package is installed, ask for installation if it’s not.
@@ -817,17 +787,20 @@ compiler. If you would like to use a different compiler, see
 
 
 (when (string= (system-name) "apollo.jasonmc.net")
-  ;;(load-theme 'wombat t)
   (load-theme 'monokai t))
 
 
 (when (eq machine 'werklt)
   (ensure-package-installed 'smex 'smart-mode-line 'powerline)
   
-  (set-default-font "Source Code Pro-12")
   (load-theme 'wombat t)
-
   (setq sml/theme 'dark)
   (sml/setup)
-  (powerline-default-theme)
+  (when (display-graphic-p)
+	(set-default-font "Source Code Pro-12")
+	(powerline-default-theme)
+	(add-to-list 'default-frame-alist '(left . 0))
+	(add-to-list 'default-frame-alist '(top . 0))
+	(add-to-list 'default-frame-alist '(height . 70))
+	(add-to-list 'default-frame-alist '(width . 100)))
   )
