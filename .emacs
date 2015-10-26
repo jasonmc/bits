@@ -10,15 +10,23 @@
  ((string-match "odysseus" (system-name)) (setq machine 'odysseus))
  ((string-match "giles" (system-name)) (setq machine 'giles))
  ((string-match "mclovin" (system-name)) (setq machine 'mclovin))
- ((string-match "e73dd8c40824ff66d747331937bbec772687961b" (sha1 (system-name)))	(setq machine 'werklt))
+ ((string-match "e73dd8c40824ff66d747331937bbec772687961b" (sha1 (system-name)))
+  (setq machine 'werklt))
+ ((string-match "c0bb8ac4db14b3bc5ed55c4f51d0663399a659de" (sha1 (system-name)))
+  (setq machine 'werk))
+ ((string-match "1b2cc281d0c8264a9978c6e51f0edfb02f495566" (sha1 (system-name)))
+  (setq machine 'apollo))
  (t	(setq machine 'other)))
 
-
-(when (or (or (eq window-system 'ns) (eq window-system 'x) (eq window-system 'w32)))
+(when (display-graphic-p)
   (mouse-wheel-mode t)
   (scroll-bar-mode -1)
   (blink-cursor-mode 0)
-  (tool-bar-mode 0))
+  (tool-bar-mode 0)
+  )
+
+(when (not (display-graphic-p))
+  (menu-bar-mode -1))
 
 (when (eq window-system 'w32)
   (menu-bar-mode -1))
@@ -171,7 +179,7 @@
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
    (quote
-	("0a1a7f64f8785ffbf5b5fbe8bca1ee1d9e1fb5e505ad9a0f184499fe6747c1af" "3c83b3676d796422704082049fc38b6966bcad960f896669dfc21a7a37a748fa" "05c3bc4eb1219953a4f182e10de1f7466d28987f48d647c01f1f0037ff35ab9a" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" "cd70962b469931807533f5ab78293e901253f5eeb133a46c2965359f23bfb2ea" "06f0b439b62164c6f8f84fdda32b62fb50b6d00e8b01c2208e55543a6337433a" "cf08ae4c26cacce2eebff39d129ea0a21c9d7bf70ea9b945588c1c66392578d1" "1157a4055504672be1df1232bed784ba575c60ab44d8e6c7b3800ae76b42f8bd" "52588047a0fe3727e3cd8a90e76d7f078c9bd62c0b246324e557dfa5112e0d0c" "5ee12d8250b0952deefc88814cf0672327d7ee70b16344372db9460e9a0e3ffc" "1b8d67b43ff1723960eb5e0cba512a2c7a2ad544ddb2533a90101fd1852b426e" "d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" "60f04e478dedc16397353fb9f33f0d895ea3dab4f581307fbf0aa2f07e658a40" "0f0e3af1ec61d04ff92f238b165dbc6d2a7b4ade7ed9812b4ce6b075e08f49fe" "e16a771a13a202ee6e276d06098bc77f008b73bbac4d526f160faa2d76c1dd0e" "73fe242ddbaf2b985689e6ec12e29fab2ecd59f765453ad0e93bc502e6e478d6" "636ecbf1091fbc99d95526d7a3a4810d1ccb58997e58bd3184863821303553f3" "f3d2144fed1adb27794a45e61166e98820ab0bbf3cc7ea708e4bf4b57447ee27" "99cbc2aaa2b77374c2c06091494bd9d2ebfe6dc5f64c7ccdb36c083aff892f7d" "f5e56ac232ff858afb08294fc3a519652ce8a165272e3c65165c42d6fe0262a0" "d2622a2a2966905a5237b54f35996ca6fda2f79a9253d44793cfe31079e3c92b" "501caa208affa1145ccbb4b74b6cd66c3091e41c5bb66c677feda9def5eab19c" "72cc9ae08503b8e977801c6d6ec17043b55313cda34bcf0e6921f2f04cf2da56" "e439d894bf9406baf73056cf7e3c913ee5c794b6adadbbb9f614aebed0fd9ce7" "9117c98819cfdeb59780cb43e5d360ff8a5964d7dd9783b01708bda83098b9fd" "4870e6cb6f0a70c14ee73db30b69a8a1f08d6ec9a689c366e88636fb81e8022d" "e992575f7c09459bfc190e6776b8f5f96964023e98267a87fb3094e7c9686776" "36afe64261e1de73fcfadedf154e4bc2c9ec1969bde0c21798d31366897bc4d2" default)))
+	("196cc00960232cfc7e74f4e95a94a5977cb16fd28ba7282195338f68c84058ec" "0a1a7f64f8785ffbf5b5fbe8bca1ee1d9e1fb5e505ad9a0f184499fe6747c1af" "3c83b3676d796422704082049fc38b6966bcad960f896669dfc21a7a37a748fa" "05c3bc4eb1219953a4f182e10de1f7466d28987f48d647c01f1f0037ff35ab9a" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" "cd70962b469931807533f5ab78293e901253f5eeb133a46c2965359f23bfb2ea" "06f0b439b62164c6f8f84fdda32b62fb50b6d00e8b01c2208e55543a6337433a" "cf08ae4c26cacce2eebff39d129ea0a21c9d7bf70ea9b945588c1c66392578d1" "1157a4055504672be1df1232bed784ba575c60ab44d8e6c7b3800ae76b42f8bd" "52588047a0fe3727e3cd8a90e76d7f078c9bd62c0b246324e557dfa5112e0d0c" "5ee12d8250b0952deefc88814cf0672327d7ee70b16344372db9460e9a0e3ffc" "1b8d67b43ff1723960eb5e0cba512a2c7a2ad544ddb2533a90101fd1852b426e" "d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" "60f04e478dedc16397353fb9f33f0d895ea3dab4f581307fbf0aa2f07e658a40" "0f0e3af1ec61d04ff92f238b165dbc6d2a7b4ade7ed9812b4ce6b075e08f49fe" "e16a771a13a202ee6e276d06098bc77f008b73bbac4d526f160faa2d76c1dd0e" "73fe242ddbaf2b985689e6ec12e29fab2ecd59f765453ad0e93bc502e6e478d6" "636ecbf1091fbc99d95526d7a3a4810d1ccb58997e58bd3184863821303553f3" "f3d2144fed1adb27794a45e61166e98820ab0bbf3cc7ea708e4bf4b57447ee27" "99cbc2aaa2b77374c2c06091494bd9d2ebfe6dc5f64c7ccdb36c083aff892f7d" "f5e56ac232ff858afb08294fc3a519652ce8a165272e3c65165c42d6fe0262a0" "d2622a2a2966905a5237b54f35996ca6fda2f79a9253d44793cfe31079e3c92b" "501caa208affa1145ccbb4b74b6cd66c3091e41c5bb66c677feda9def5eab19c" "72cc9ae08503b8e977801c6d6ec17043b55313cda34bcf0e6921f2f04cf2da56" "e439d894bf9406baf73056cf7e3c913ee5c794b6adadbbb9f614aebed0fd9ce7" "9117c98819cfdeb59780cb43e5d360ff8a5964d7dd9783b01708bda83098b9fd" "4870e6cb6f0a70c14ee73db30b69a8a1f08d6ec9a689c366e88636fb81e8022d" "e992575f7c09459bfc190e6776b8f5f96964023e98267a87fb3094e7c9686776" "36afe64261e1de73fcfadedf154e4bc2c9ec1969bde0c21798d31366897bc4d2" default)))
  '(display-time-mode t)
  '(ecb-options-version "2.32")
  '(flymake-allowed-file-name-masks
@@ -785,8 +793,7 @@ compiler. If you would like to use a different compiler, see
 
   )
 
-
-(when (string= (system-name) "apollo.jasonmc.net")
+(when (eq machine 'apollo)
   (load-theme 'monokai t))
 
 
@@ -803,4 +810,16 @@ compiler. If you would like to use a different compiler, see
 	(add-to-list 'default-frame-alist '(top . 0))
 	(add-to-list 'default-frame-alist '(height . 70))
 	(add-to-list 'default-frame-alist '(width . 100)))
+  )
+
+(when (eq machine 'werk)
+  (ensure-package-installed 'smex 'smart-mode-line 'powerline)
+  
+  (load-theme 'monokai t)
+  (setq sml/theme 'dark)
+  (sml/setup)
+  (when (display-graphic-p)
+	(set-default-font "Source Code Pro-12")
+	(powerline-default-theme)
+	)
   )
