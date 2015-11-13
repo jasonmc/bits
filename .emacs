@@ -813,7 +813,17 @@ compiler. If you would like to use a different compiler, see
   )
 
 (when (eq machine 'werk)
-  (ensure-package-installed 'smex 'smart-mode-line 'powerline)
+  (require 'use-package)
+  (use-package use-package)
+  (use-package smex)
+  (use-package smart-mode-line)
+  (use-package powerline)
+  (use-package magit)
+  (use-package ace-jump-mode
+	:bind ("C-." . ace-jump-mode))
+  (use-package yasnippet
+	:config
+	(yas-reload-all))
   
   (load-theme 'monokai t)
   (setq sml/theme 'dark)
@@ -822,4 +832,5 @@ compiler. If you would like to use a different compiler, see
 	(set-default-font "Source Code Pro-12")
 	(powerline-default-theme)
 	)
+  (require 'google)
   )
